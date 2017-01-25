@@ -1,29 +1,73 @@
+<!DOCTYPE head PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<body>
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
 	// create record
 	include 'dbc.php';
+	$id = $_POST["id"];
+	if (isset($id) && strlen($id)>0) // if passed id the update
+	{
+		if (!($stmt = $SQL->prepare("update zavod set nazev=?, kdy=STR_TO_DATE(?,'%d.%m.%Y'), kde=?, type_id=?, vedouci_id=?, pozvanka=? where id=?"))) {
+			echo "Prepare update failed: (" . $SQL->errno . ") " . $SQL->error;
+			die();
+		}
+		$stmt->bind_param('sssiisi', $_POST["nazev"], $_POST["kdy"], $_POST["kde"], $_POST["typ"], $_POST["tren_id"], $_POST["pozvanka"], $id);
+	} else
+	{
+		unset($id);
+		if (!($stmt = $SQL->prepare("INSERT INTO zavod(nazev, kdy, kde, type_id, vedouci_id, pozvanka) VALUES (?,STR_TO_DATE(?,'%d.%m.%Y'),?,?,?,?)"))) {
+			echo "Prepare insert failed: (" . $SQL->errno . ") " . $SQL->error; 
+			die();
+		}
+		$stmt->bind_param('sssiis', $_POST["nazev"], $_POST["kdy"], $_POST["kde"], $_POST["typ"], $_POST["tren_id"], $_POST["pozvanka"]);
+	}
+	$stmt->execute();
+	if (isset($id))
+	{
+		$zavod_id = $id;
+		unset($id);
+	} else
+	{
+		$zavod_id=$SQL->insert_id;
+	}
+	$stmt->close();
+
+	//printf("values(%s,%s,%s,%d,%d,%s,).\n", $_POST["nazev"], $_POST["kdy"], $_POST["kde"], $_POST["typ"], $_POST["tren_id"], $_POST["pozvanka"]);
+	//printf("Row inserted with id %d.\n", $zavod_id);
 	
-	if (!($stmt = $SQL->prepare("INSERT INTO zavod(nazev, kdy, kde, type_id, vedouci_id, pozvanka) VALUES (?,?,?,?,?,?)"))) {
-		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error; 
+	// now save related kategories if any
+	// delete existing ones
+	$qry = sprintf("delete from zavod_kateg where zavod_id=%d", $zavod_id);
+	$SQL->query($qry);
+	$kat_arr = $_POST["kat"];
+	//printf("kategories: %s.\n", $kat_arr);
+	if (!($stmt = $SQL->prepare("insert into zavod_kateg(zavod_id, kateg_id) values (?,?);"))) {
+		echo "Prepare insert2 failed: (" . $SQL->errno . ") " . $SQL->error;
 		die();
 	}
-	$stmt->bind_param('sssiis', $_POST["nazev"], $_POST["kdy"], $_POST["kde"], $_POST["typ"], $_POST["tren_id"], $_POST["pozvanka"]);
-	$stmt->execute();
-	$zavod_id=$SQL->insert_id;
-	$stmt->close();
-	$SQL->close();
-
-	printf("values(%s,%s,%s,%d,%d,%s,).\n", $_POST["nazev"], $_POST["kdy"], $_POST["kde"], $_POST["typ"], $_POST["tren_id"], $_POST["pozvanka"]);
-	printf("%d Row inserted with id %d.\n", $stmt->affected_rows, $zavod_id);
+	$stmt->bind_param('ii', $zavod_id, $kat_id);
+	foreach ($kat_arr as &$one_kat) {
+		$kat_id = $one_kat;
+		$stmt->execute();
+	}
 	
-	//include 'vysledky.php';
-	// redirect elsewhere
+	
+	$stmt->close();
+	
+	$SQL->close();
+	
+	include 'vysledky.php';
+
 } else
 {
+	//printf("<p>jsem v tom else\n</body></html>");
+	
 	//nejaky error, redirect na index
 	header("Location: " . $_SERVER['CONTEXT_PREFIX'] );
 	die();
+	
 	/*
 	$_SERVER['CONTEXT_PREFIX'];
 	echo $_SERVER['SERVER_NAME'];

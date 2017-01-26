@@ -24,7 +24,7 @@ if (isset($id))
 }
 ?>
 
-    <title>1JCBO - Závodu</title>
+    <title>1JCBO - Závod</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="jquery.mobile-1.4.5.min.css" />
     <link rel="stylesheet" href="jquery-ui.css">
@@ -76,7 +76,7 @@ if (isset($id))
     <td><select name="typ">
     <?php
     include 'dbc.php';
-    $qry = "select id, nazev from zavody_typ order by nazev";
+    $qry = "select id, nazev from zavody_typ order by poradi, nazev";
     $result_res = $SQL->query($qry) or die("Query failed: " . $SQL->error);
     while ($zav_typ = $result_res->fetch_array()) { ?>
         <option value="<?=$zav_typ["id"]?>" <?= ($zavod["type_id"]==$zav_typ["id"]?"selected" : "" ) ?>><?=$zav_typ["nazev"]?></option>

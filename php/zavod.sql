@@ -46,8 +46,12 @@ CREATE or replace TABLE zavod (
  PRIMARY KEY (id),
  UNIQUE KEY uq_z (nazev, kdy),
  CONSTRAINT fk_z_j FOREIGN KEY (vedouci_id) REFERENCES judoka( id),
- CONSTRAINT fk_z_zt FOREIGN KEY (type_id) REFERENCES zavody_typ(id)
+ CONSTRAINT fk_z_zt FOREIGN KEY (type_id) REFERENCES zavody_typ(id) on update CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+alter table zavod DROP FOREIGN KEY fk_z_zt;
+alter table zavod add CONSTRAINT fk_z_zt FOREIGN KEY (type_id) REFERENCES zavody_typ(id) on update CASCADE;
+
 
 
 -- pozvanka

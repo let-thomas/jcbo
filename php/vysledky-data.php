@@ -8,20 +8,28 @@ if (!isset($id))
 }
 include 'dbc.php';
 
-if (!($stmt = $SQL->prepare("select nazev from zavod where id=?"))) {
-	echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+$qry ="select zavod.id as zid, zavod.nazev as zname, kategorie.id as kid, kategorie.nazev as kname  from zavod ";
+$qry.=" left join zavod_kateg on (zavod.id=zavod_id) ";
+$qry.=" left join kategorie on (kategorie.id = kateg_id) ";
+$qry.=" where zavod.id=?";
+if (!($stmt = $SQL->prepare($qry))) {
+	echo "Prepare failed: (" . $SQL->errno . ") " . $SQL->error;
 	die();
 }
 $stmt->bind_param('i', $id);
 $stmt->execute();
 
 /* bind result variables */
-$stmt->bind_result($nazev);
+$stmt->bind_result($zid, $nazev, $kid, $kname);
 
 if ($stmt->fetch()) {
 	printf ("<h3>Vysledky z '%s'</h3>\n", $nazev);
+} else
+{
+	printf("error loading");
+	die();
 }
-$stmt->close();
+
 ?>
 
 <button class="ui-btn ui-btn-inline" id="add_result">Pridat vysledek</button>
@@ -46,9 +54,19 @@ $stmt->close();
 
 )( jQuery );
 </script>
+<?php
+do {
+	printf("<p>%d %s</p>\n", $kid, $kname);
+} while($stmt->fetch());
+$stmt->close();
+?>
 <div id="blee">
-  <!-- ITEMS TO BE DISPLAYED HERE -->
-</div>
+<?php
+include 'vysledky-row.php';
+?>  
+  
+
+</div><!-- blee -->
 <ul id="">
 </ul>
 

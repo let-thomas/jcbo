@@ -6,17 +6,21 @@
     <link rel="stylesheet" href="jquery.mobile-1.4.5.min.css" />
     <link rel="stylesheet" href="jquery-ui.css">
     <link rel="stylesheet" href="jcbo.css">
-    <!-- script src="jquery-3.1.1.min.js"></script> -->
+    <script src="jquery-3.1.1.min.js"></script>
     <script src="jquery.js"></script>
     <script src="jquery.mobile-1.4.5.min.js" ></script>
 	<meta charset="UTF-8">
     <script src="jcbo.js"></script>
-   <script>
-
-</script>
+    <script>
+    </script>
+    <style>
+    li { border-style: none; }
+    .ui-li-static { padding: 0 0;}
+    </style>
 </head>
 <body>
 <div data-role="page">
+
     <div data-role="header">
     <h1>Vložení výsledků závodu</h1>
     </div>
@@ -28,6 +32,10 @@ include 'dbc.php';
 if (!isset($zavod_id))
 {
 	$zavod_id = $_POST["z_id"];
+}
+if (!isset($zavod_id))
+{
+	$zavod_id = $_GET["z_id"];
 }
 
 if (isset($zavod_id))
@@ -47,6 +55,8 @@ if (isset($zavod_id))
            data: dataString, 
            success: function(result){ 
              $("#show").html(result); 
+             $("#show").trigger('create') ;
+             $("#jakotable").trigger('create') ;
            }
          });
          </script>
@@ -58,10 +68,9 @@ if (isset($zavod_id))
 	// show selection
 	?>
     <form method="post" action="vysledky_cmd.php">
-    <table>
-    <tr>
-    <td><label for="title-filter-menu">Vyber turnaj:</label></td>
-    <td>        <select id="title-filter-menu" data-native-menu="false" class="filterable-select" name="z_id">
+    <div class="ui-field-contain">
+        <label for="title-filter-menu">Vyber turnaj:</label></td>
+            <select id="title-filter-menu" data-native-menu="false" class="filterable-select" name="z_id">
             <option>Vyber závod ...</option>
          <?php
          $query="select id, nazev, kdy from zavod order by kdy"; // where year(kdy)=year(now) ";
@@ -73,15 +82,25 @@ if (isset($zavod_id))
          $result->close();
          ?>
         </select>
-    </td>
-    </tr>
-    </table>
+    </div>
     </form>    
     <!-- rok -->
     <?php 
 }
 $SQL->close();
 ?>
+<form class="ui-filterable">
+    <input id="filterBasic-input" data-type="search" placeholder="tojo..."k>
+</form>
+
+<ul data-role="listview" data-filter="true" data-input="#filterBasic-input" data-filter-reveal="true">
+    <li>Acura</li>
+    <li>Audi</li>
+    <li>BMW</li>
+    <li>Cadillac</li>
+    <li>Ferrari</li>
+</ul>
+
 
 <div id="show">
   <!-- ITEMS TO BE DISPLAYED HERE -->

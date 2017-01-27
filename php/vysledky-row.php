@@ -1,18 +1,27 @@
 <?php
+include 'dbc.php';
+// TODO check/save what come from ajax
+
+//$kid, $kname
+$query="select judoka.* from kategorie, judoka where kategorie.id=4  and year(narozen) between (year(curdate())-rdo) and (year(curdate())-rod)  order by prijmeni, jmeno;";
+$res = $SQL->query($query) or die("Query failed: " . $SQL->error);
+		
 ?>
-       <!-- <input name="text-1" id="text-1" value="" type="text"> -->
+<h5>kategorie <?=$kname ?></h5>
+
 <form method="post">
     <div class="ui-block-1">
         <label for="filterBasic-input2">Jméno</label>
-        <input id="filterBasic-input2" data-type="search" placeholder="zavodnik...">
+        <input type="text" id="filterBasic-input2" data-type="search" placeholder="zavodnik...">
 
-<ul data-role="listview" data-filter="true" data-input="#filterBasic-input2" data-filter-reveal="true" style="display: none">
-<li>Acura</li>
-<li>Audi</li>
-<li>BMW</li>
-<li>Cadillac</li>
-<li>Ferrari</li>
-</ul>
+		<ul data-role="listview" data-filter="true" data-input="#filterBasic-input2" data-filter-reveal="true" style="margin: 0"><!--  display: none -->
+        <?php
+        while ($row = $res->fetch_array()) {
+        	printf("<li>%s %s</li>", $row["prijmeni"], $row["jmeno"]);
+        }
+        $res->close();
+        ?>
+		</ul>
        
     </div>
  <div class="ui-grid-b">
@@ -33,7 +42,7 @@
             <option value="3">3</option>
             <option value="5">5</option>
             <option value="7">7</option>
-
+            <option value="9">9</option>
         </select>
 	   <!-- <input data-inline="true" data-clear-btn="false" name="position2" id="in_position2" value="bez" type="number"> -->
     </div>
@@ -51,3 +60,6 @@
   </div>
 </form>
 
+<?php
+$SQL->close();
+?>

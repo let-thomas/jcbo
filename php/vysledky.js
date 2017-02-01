@@ -16,6 +16,7 @@
                   data: dataString, /* THE DATA WE WILL BE PASSING */
                   success: function(result){ /* GET THE TO BE RETURNED DATA */
                     $("#show").html(result); /* THE RETURNED DATA WILL BE SHOWN IN THIS DIV */
+                    
                   }
                 });
 
@@ -92,14 +93,73 @@ $.mobile.document
         if ( !pageIsSelectmenuDialog( data.toPage ) ) {
             return;
         }
-        listview = data.prevPage.jqmData( "listview" ),
+        // ty wole
+        //listview = data.prevPage.jqmData( "listview" ),
+        listview = data.nextPage.jqmData( "listview" );
         form = listview.jqmData( "filter-form" );
         // Put the form back in the popup. It goes ahead of the listview.
         listview.before( form );
     })
     .on("title-filter-menu", function(event, data) {
-        window.console.log("jsem tu");
-        });
+        console.log("jsem tu");
+        })
+//-    .on('pagecontainershow', function (e, ui) {
+//        var activePage = $(':mobile-pagecontainer').pagecontainer('getActivePage');
+//        if(activePage.attr('id') === 'login') {
+//-            $(document)
+            .on('click', '#submit', function(ev, handl) { // catch the form's submit event
+                //if($('#username').val().length > 0 && $('#password').val().length > 0)
+                { //ev.currentTarget
+                	var form = this.closest("form");
+                	var form_id = "#" + form.id; 
+                	var div = form.closest("div");
+                	var div_id = "#" + div.id;
+                	var kategory = $(form_id).find('#kat').val();
+                	//dtto var kategory = $(form_id).find('input[name="kat"]').val();
+                	var name = $(form_id).find('#name'+kategory+"-filter-menu").val();//-filter-menu
+                    //userHandler.username = $('#username').val();
+                 
+                    // Send data to server through the Ajax call
+                    // action is functionality we want to call and outputJSON is our data
+                    $.ajax({url: 'vysledky-row.php',
+                        data: {action : 'store', formData : $(form_id).serialize()},
+                        type: 'post',                  
+                        async: 'true',
+                        dataType: 'html',
+                        beforeSend: function() {
+                            // This callback function will trigger before data is sent
+                            $.mobile.loading('show'); // This will show Ajax spinner
+                        },
+                        complete: function() {
+                            // This callback function will trigger on data sent/received complete   
+                            $.mobile.loading('hide'); // This will hide Ajax spinner
+                        },
+                        success: function (result) {
+                            // Check if authorization process was successful
+                            //-if(result.status == 'success') {
+                            	$(div_id).html(result); 
+                                $(div_id).trigger('create') ;
+                                //userHandler.status = result.status;
+                                //$.mobile.changePage("#second");                        
+                            //-} else {
+                            //-    alert('Logon unsuccessful!');
+                            //-}
+                        },
+                        error: function (request,error) {
+                            // This callback function will trigger on unsuccessful action               
+                            alert('Network error has occurred please try again!');
+                        }
+                    });                  
+                }
+                //else {
+                //    alert('Please fill all necessary fields');
+                //}          
+                return false; // cancel original event to prevent form submitting
+//-            });  
+//        } else if(activePage.attr('id') === 'second') {
+//            activePage.find('.ui-content').text('Wellcome ' + userHandler.username);
+//        }
+    });
     
 }
 

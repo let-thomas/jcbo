@@ -10,7 +10,7 @@
     <script src="jquery.js"></script>
     <script src="jquery.mobile-1.4.5.min.js" ></script>
 	<meta charset="UTF-8">
-    <script src="jcbo.js"></script>
+    <script src="vysledky.js"></script>
     <script>
     </script>
     <style>
@@ -29,7 +29,7 @@
 
 <?php
 include 'dbc.php';
-if (!isset($zavod_id))
+if (!isset($zavod_id) && isset($_POST["z_id"]))
 {
 	$zavod_id = $_POST["z_id"];
 }
@@ -69,8 +69,8 @@ if (isset($zavod_id))
 	?>
     <form method="post" action="vysledky_cmd.php">
     <div class="ui-field-contain">
-        <label for="title-filter-menu">Vyber turnaj:</label></td>
-            <select id="title-filter-menu" data-native-menu="false" class="filterable-select" name="z_id">
+        <label for="zavod-filter-menu">Vyber turnaj:</label></td>
+            <select id="zavod-filter-menu" data-native-menu="false" class="filterable-select" name="z_id">
             <option>Vyber závod ...</option>
          <?php
          $query="select id, nazev, kdy from zavod order by kdy"; // where year(kdy)=year(now) ";
@@ -89,17 +89,6 @@ if (isset($zavod_id))
 }
 $SQL->close();
 ?>
-<form class="ui-filterable">
-    <input id="filterBasic-input" data-type="search" placeholder="tojo..."k>
-</form>
-
-<ul data-role="listview" data-filter="true" data-input="#filterBasic-input" data-filter-reveal="true">
-    <li>Acura</li>
-    <li>Audi</li>
-    <li>BMW</li>
-    <li>Cadillac</li>
-    <li>Ferrari</li>
-</ul>
 
 
 <div id="show">

@@ -5,6 +5,7 @@ $id = $_POST["z_id"];
 if (!isset($id))
 {
 	echo "<h4>invokation error!</h4>\n";
+	return;
 }
 include 'dbc.php';
 
@@ -24,6 +25,7 @@ $stmt->bind_result($zid, $nazev, $kid, $kname);
 
 if ($stmt->fetch()) {
 	printf ("<h3>Vysledky z '%s'</h3>\n", $nazev);
+	//printf("<!-- %d - %d - %s -->\n", $zid, $kid, $kname);
 } else
 {
 	printf("error loading");
@@ -31,7 +33,7 @@ if ($stmt->fetch()) {
 }
 
 ?>
-
+<!-- 
 <button class="ui-btn ui-btn-inline" id="add_result">Pridat vysledek</button>
 <script type="text/javascript">
 ( function( $ ) {
@@ -54,19 +56,25 @@ if ($stmt->fetch()) {
 
 )( jQuery );
 </script>
+ -->
 <?php
 do {
+	printf("<div id=\"kt%d\">\n", $kid);
 	printf("<p>%d %s</p>\n", $kid, $kname);
+	include 'vysledky-row.php';
+	printf("<hr/>\n");
+	printf("</div><!-- kt%d -->\n", $kid);
+	
 } while($stmt->fetch());
 $stmt->close();
 ?>
+
 <div id="blee">
 <?php
-include 'vysledky-row.php';
+//include 'vysledky-row.php';
 ?>  
-  
-
 </div><!-- blee -->
+
 <ul id="">
 </ul>
 

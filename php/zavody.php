@@ -12,12 +12,25 @@
 </head>
 <body>
 <div data-role="page">
-	<div data-role="header">
-	<h1>Přehled závodů</h1>
-	</div>
+    <?php
+    $nav_menu="prehled";
+    include 'header.inc';
+    ?>
+    
     
     <div role="main" class="ui-content">
-    <table>
+    <table data-role="table" id="cr-table" data-mode="reflow" class="ui-responsive">
+    <thead>
+        <tr>
+	      <th data-priority="1">Název</th>
+	      <th data-priority="2">Kdy</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        
+        </tr>
+    </thead>
+    <tbody>
     
 <?php
 include 'dbc.php';
@@ -38,6 +51,7 @@ while ($zavod = $res->fetch_array()) {
 $res->close();
 $SQL->close();
 ?>
+    </tbody>
     </table>
     </div><!-- main -->
 </div><!-- page -->

@@ -21,9 +21,14 @@
 <body>
 <div data-role="page">
 
-    <div data-role="header">
+    <!-- <div data-role="header">
     <h1>Vložení výsledků závodu</h1>
-    </div>
+    </div> -->
+    <?php
+    $nav_menu="vysledky";
+    include 'header.inc';
+    ?>
+
 
 <div role="main" class="ui-content">
 

@@ -4,26 +4,6 @@
 
 ( function( $ ) {
 
-	// On document ready
-	  $(function() {
-          $("#title-filter-menu").change(function(){ /* WHEN YOU CHANGE AND SELECT FROM THE SELECT FIELD */
-                var zid_val = $(this).val(); /* GET THE VALUE OF THE SELECTED DATA */
-                var dataString = "z_id="+zid_val; /* STORE THAT TO A DATA STRING */
-
-                $.ajax({ /* THEN THE AJAX CALL */
-                  type: "POST", /* TYPE OF METHOD TO USE TO PASS THE DATA */
-                  url: "vysledky-data.php", /* PAGE WHERE WE WILL PASS THE DATA */
-                  data: dataString, /* THE DATA WE WILL BE PASSING */
-                  success: function(result){ /* GET THE TO BE RETURNED DATA */
-                    $("#show").html(result); /* THE RETURNED DATA WILL BE SHOWN IN THIS DIV */
-                    
-                  }
-                });
-
-              });
-          
-	  });
-    
 function pageIsSelectmenuDialog( page ) {
     var isDialog = false,
         id = page && page.attr( "id" );
@@ -109,6 +89,11 @@ $.mobile.document
         console.log("doc show.postinit "); //// + event + "; ui " + data);
         //var items = $("input[id^='searchField']");
         //each
+    })
+    .on("change", "#zavod-filter-menu", function(event, data) {
+    	console.log("zavod-filter-menu "); //// + event + "; ui " + data);
+    	var form = this.closest("form");
+    	form.submit();
     })
     
     .on("searchField.postinit", "input[id^='searchField']", function(event, data) {

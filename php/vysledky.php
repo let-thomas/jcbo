@@ -9,7 +9,7 @@
     <script src="jquery-3.1.1.min.js"></script>
     <script src="jquery.js"></script>
     <script src="jquery.mobile-1.4.5.min.js" ></script>
-    <script src="jqm.autoComplete-1.5.2.js"></script>
+    <script src="jqm.autoComplete-1.5.2-min.js"></script>
 <!--  
     <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
@@ -17,28 +17,22 @@
     
 	<meta charset="UTF-8">
     <script src="vysledky.js"></script>
-    <script>
-    </script>
     <style>
     li { border-style: none; }
     .ui-li-static { padding: 0 0;}
     </style>
     
-    
 </head>
 <body>
 <div data-role="page">
 
-    <!-- <div data-role="header">
-    <h1>Vložení výsledků závodu</h1>
-    </div> -->
     <?php
     $nav_menu="vysledky";
     include 'header.inc';
     ?>
 
 
-<div role="main" class="ui-content">
+    <div role="main" class="ui-content">
 
 <?php
 include 'dbc.php';
@@ -51,46 +45,11 @@ if (!isset($zavod_id))
 	$zavod_id = $_GET["z_id"];
 }
 
-if (isset($zavod_id))
-{
-	$query=sprintf("select id, nazev, kdy from zavod where id=%d",$zavod_id); 
-	$result = $SQL->query($query) or die("Query failed: " . $SQL->error);
-	if ($row = $result->fetch_array()) {?>
-         <!--  h3>Vysledky turnaje <?=$row["nazev"]?> <?=$row["kdy"]?></h3 -->
-         <script>
-         console.log( "delame!" );
-         
-         var dataString = "z_id="+<?=$zavod_id ?>; 
-
-         $.ajax({ 
-           type: "POST", 
-           url: "vysledky-data.php", 
-           data: dataString, 
-           complete: function() { 
-               var obj = $("#searchField"); 
-               console.log("po ajaxu\n"); },
-           success: function(result){ 
-             $("#show").html(result);
-             var obj = $("#searchField"); 
-             console.log("pre create\n");
-             $("#show").trigger('create') ;
-             $("#show").trigger('show.postinit') ;
-             $("input[id^='searchField']").trigger('searchField.postinit') ;
-
-             console.log("post create\n");
-             //$("#jakotable").trigger('create') ;
-           }
-         });
-         
-         </script>
-    <?php
-    }
-    $result->close();
-} else 
+if (!isset($zavod_id))
 {
 	// show selection
 	?>
-    <form method="post" action="vysledky_cmd.php">
+    <form method="post" action="vysledky.php">
     <div class="ui-field-contain">
         <label for="zavod-filter-menu">Vyber turnaj:</label></td>
             <select id="zavod-filter-menu" data-native-menu="false" class="filterable-select" name="z_id">
@@ -107,8 +66,43 @@ if (isset($zavod_id))
         </select>
     </div>
     </form>    
-    <!-- rok -->
-    <?php 
+    <?php
+    // + rok
+} else 
+{
+	$query=sprintf("select id, nazev, kdy from zavod where id=%d",$zavod_id);
+	$result = $SQL->query($query) or die("Query failed: " . $SQL->error);
+	if ($row = $result->fetch_array()) {?>
+	         <!--  h3>Vysledky turnaje <?=$row["nazev"]?> <?=$row["kdy"]?></h3 -->
+	         <script>
+	         console.log( "delame!" );
+	         
+	         var dataString = "z_id="+<?=$zavod_id ?>; 
+	
+	         $.ajax({ 
+	           type: "POST", 
+	           url: "vysledky-data.php", 
+	           data: dataString, 
+	           complete: function() { 
+	               var obj = $("#searchField"); 
+	               console.log("po ajaxu\n"); },
+	           success: function(result){ 
+	             $("#show").html(result);
+	             var obj = $("#searchField"); 
+	             console.log("pre create\n");
+	             $("#show").trigger('create') ;
+	             $("#show").trigger('show.postinit') ;
+	             $("input[id^='searchField']").trigger('searchField.postinit') ;
+	
+	             console.log("post create\n");
+	             //$("#jakotable").trigger('create') ;
+	           }
+	         });
+	         
+	         </script>
+	    <?php
+	    }
+	    $result->close();
 }
 $SQL->close();
 ?>

@@ -44,17 +44,60 @@ if (isset($id))
   } );
   </script>
  <meta charset="UTF-8">
+ <style type="text/css">
+ @media_nebrat ( min-width: 40em ) {
+    /* Show the table header rows and set all cells to display: table-cell */
+    .my-custom-breakpoint td,
+    .my-custom-breakpoint th,
+    .my-custom-breakpoint tbody th,
+    .my-custom-breakpoint tbody td,
+    .my-custom-breakpoint thead td,
+    .my-custom-breakpoint thead th {
+        display: table-cell;
+        margin: 0;
+    }
+    /* Hide the labels in each cell */
+    .my-custom-breakpoint td .ui-table-cell-label,
+    .my-custom-breakpoint th .ui-table-cell-label {
+        display: none;
+    }
+    thead {
+        display: none;
+    } 
+}
+ </style>
 </head>
 <body>
 <div data-role="page">
-	<div data-role="header">
-	<h1><?=isset($id)? "Editace" : "Vytvoření nového" ?> závodu</h1>
+    <!--
+	<div data-role="header" style="overflow:hidden;">
+	   <h1><?=isset($id)? "Editace" : "Vytvoření nového" ?> závodu</h1>
+       <div data-role="navbar">
+         <ul>
+			<li><a href="zavody.php">prehled zavodu</a>
+			<li><a href="zavod.php">vytvor zavod</a>
+			<li><a href="vysledky.php">vysledky</a>
+         </ul>
+       </div>< ! - - /navbar - ->
 	</div>
+    -->
+        <?php
+    $nav_menu="novy";
+    include 'header.inc';
+    ?>
+    
     
     <div role="main" class="ui-content">
 <form action="zavod_cmd.php" method="post" >
 <input name="id" value="<?= $id ?>" type="hidden"/>
-<table>
+<table  data-role="table" id="cr-table" data-mode="reflow" class="ui-responsive">
+<thead>
+    <tr>
+      <th data-priority="1"></th>
+      <th data-priority="2"></th>
+      </tr>
+      </thead>
+<tbody>
 <tr>
     <td><label for="text-basic">Název:</label></td>
     <td><input name="nazev" id="nazev" value="<?= $zavod["nazev"] ?>" type="text"></td>
@@ -122,6 +165,7 @@ if (isset($id))
 <tr>
     <td colspan="2"><button class="ui-shadow ui-btn ui-corner-all" type="submit">Ulozit</button></td>
 </tr>
+</tbody>
 </table>
 
 </form>

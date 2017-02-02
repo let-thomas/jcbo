@@ -21,6 +21,7 @@
                 });
 
               });
+          
 	  });
     
 function pageIsSelectmenuDialog( page ) {
@@ -85,6 +86,7 @@ $.mobile.document
         data.toPage.jqmData( "listview", listview );
         // Place the form before the listview in the dialog.
         listview.before( form );
+ 
     })
     // After the dialog is closed, the form containing the filter input is returned to the popup.
     .on( "pagecontainerhide", function( event, data ) {
@@ -103,6 +105,41 @@ $.mobile.document
     .on("title-filter-menu", function(event, data) {
         console.log("jsem tu");
         })
+    .on("show.postinit", function(event, data) {
+        console.log("doc show.postinit "); //// + event + "; ui " + data);
+        //var items = $("input[id^='searchField']");
+        //each
+    })
+    
+    .on("searchField.postinit", "input[id^='searchField']", function(event, data) {
+        console.log("searchField.postinit " + event + "; ui " + data);
+        
+    //.on("pagecontainershow", function(e) {
+    //+-*/.on("pagecontainercreate", function(e, ui) {
+    //-.on("show.postinit", )
+    //+-*/	console.log("pagecontainercreate " + e + "; ui " + ui);
+		//var autocompleteData = $.parseJSON('[{"value":"AL","label":"Alabama"},{"value":"AK","label":"Alaska"},{"value":"AS","label":"American Samoa"},{"value":"AZ","label":"Arizona"},{"value":"AR","label":"Arkansas"},{"value":"CA","label":"California"},{"value":"CO","label":"Colorado"},{"value":"CT","label":"Connecticut"},{"value":"DE","label":"Delaware"},{"value":"DC","label":"District of Columbia"},{"value":"FL","label":"Florida"},{"value":"GA","label":"Georgia"},{"value":"GU","label":"Guam"},{"value":"HI","label":"Hawaii"},{"value":"ID","label":"Idaho"},{"value":"IL","label":"Illinois"},{"value":"IN","label":"Indiana"},{"value":"IA","label":"Iowa"},{"value":"KS","label":"Kansas"},{"value":"KY","label":"Kentucky"},{"value":"LA","label":"Louisiana"},{"value":"ME","label":"Maine"},{"value":"MD","label":"Maryland"},{"value":"MA","label":"Massachusetts"},{"value":"MI","label":"Michigan"},{"value":"MN","label":"Minnesota"},{"value":"MS","label":"Mississippi"},{"value":"MO","label":"Missouri"},{"value":"MT","label":"Montana"},{"value":"NE","label":"Nebraska"},{"value":"NV","label":"Nevada"},{"value":"NH","label":"New Hampshire"},{"value":"NJ","label":"New Jersey"},{"value":"NM","label":"New Mexico"},{"value":"NY","label":"New York"},{"value":"NC","label":"North Carolina"},{"value":"ND","label":"North Dakota"},{"value":"NI","label":"Northern Marianas Islands"},{"value":"OH","label":"Ohio"},{"value":"OK","label":"Oklahoma"},{"value":"OR","label":"Oregon"},{"value":"PA","label":"Pennsylvania"},{"value":"PR","label":"Puerto Rico"},{"value":"RI","label":"Rhode Island"},{"value":"SC","label":"South Carolina"},{"value":"SD","label":"South Dakota"},{"value":"TN","label":"Tennessee"},{"value":"TX","label":"Texas"},{"value":"UT","label":"Utah"},{"value":"VT","label":"Vermont"},{"value":"VI","label":"Virgin Islands"},{"value":"VA","label":"Virginia"},{"value":"WA","label":"Washington"},{"value":"WV","label":"West Virginia"},{"value":"WI","label":"Wisconsin"},{"value":"WY","label":"Wyoming"}]');
+    	var autocompleteData = [
+            { label: "jiri petr", value: "val1"},
+            { label: "piri chmyri", value: "val2"},
+            { label: "vlada made", value: "val13"},
+            { label: "chlap toma", value: "val4"},
+            { label: "tomas comas", value: "val5"},
+        ];
+
+		$("#searchField").autocomplete({
+			target: $('#suggestions'),
+			source: autocompleteData,
+			matchFromStart: false,
+			callback: function(e) {
+				var $a = $(e.currentTarget);
+				$('#searchField').val( $a.data('autocomplete').value );
+				$("#searchField").autocomplete('clear');
+			},
+			link: 'zavodnik?name=',
+			minLength: 1
+		});
+	})
 //-    .on('pagecontainershow', function (e, ui) {
 //        var activePage = $(':mobile-pagecontainer').pagecontainer('getActivePage');
 //        if(activePage.attr('id') === 'login') {
@@ -160,7 +197,10 @@ $.mobile.document
 //            activePage.find('.ui-content').text('Wellcome ' + userHandler.username);
 //        }
     });
-    
+	$("#show").on("show.postinit", function(e, ui) { //show.postinit
+        console.log("show.postinit " + e + "; ui " + ui);
+    });
+	
 }
 
 )( jQuery );

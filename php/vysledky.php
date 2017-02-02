@@ -9,6 +9,12 @@
     <script src="jquery-3.1.1.min.js"></script>
     <script src="jquery.js"></script>
     <script src="jquery.mobile-1.4.5.min.js" ></script>
+    <script src="jqm.autoComplete-1.5.2.js"></script>
+<!--  
+    <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+    <script src="jqm.autoComplete-1.5.2-min.js"></script> -->
+    
 	<meta charset="UTF-8">
     <script src="vysledky.js"></script>
     <script>
@@ -17,6 +23,8 @@
     li { border-style: none; }
     .ui-li-static { padding: 0 0;}
     </style>
+    
+    
 </head>
 <body>
 <div data-role="page">
@@ -58,12 +66,22 @@ if (isset($zavod_id))
            type: "POST", 
            url: "vysledky-data.php", 
            data: dataString, 
+           complete: function() { 
+               var obj = $("#searchField"); 
+               console.log("po ajaxu\n"); },
            success: function(result){ 
-             $("#show").html(result); 
+             $("#show").html(result);
+             var obj = $("#searchField"); 
+             console.log("pre create\n");
              $("#show").trigger('create') ;
-             $("#jakotable").trigger('create') ;
+             $("#show").trigger('show.postinit') ;
+             $("input[id^='searchField']").trigger('searchField.postinit') ;
+
+             console.log("post create\n");
+             //$("#jakotable").trigger('create') ;
            }
          });
+         
          </script>
     <?php
     }

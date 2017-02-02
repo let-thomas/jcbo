@@ -22,37 +22,72 @@ $s_vys->bind_result($jmeno, $prijmeni, $zavodnik_id, $win, $lose, $misto);
 
 ?>
 <h5>kategorie <?=$kname ?></h5>
-<table style="border: 1px solid black; border-collapse: collapse;" >
-<tr>
-<td>Jméno</td><td>výhry</td><td>prohry</td><td>místo</td>
-</tr>
+<table data-role="table" data-mode="reflow" class="ui-responsive" >
+<thead>
+	<tr>
+	<th>Jméno</th><th>výhry</th><th>prohry</th><th>místo</th>
+	</tr>
+</thead>
+<tbody>
 <?php 
 while ($s_vys->fetch()) {
-    printf("<tr >\n");
-    printf("<td style=\"border: 1px solid black\">%s %s</td><td>%d</td><td>%d</td><td>%d %d</td>\n", $jmeno, $prijmeni, $win, $lose, $misto, isset($misto));
+    printf("<tr >\n"); // background-color
+    printf("<td>%s %s</td><td>%d</td><td>%d</td><td>%s</td>\n", $jmeno, $prijmeni, $win, $lose, (isset($misto)&&$misto>0)?$misto:"bez" );
     printf("</tr>\n");
 }
 ?>
+</tbody>
 </table>
 
 <form method="post" data-ajax="false" id="form<?=$kid ?>">
     <input id="kat" name="kat" value="<?=$kid ?>" type="hidden" />
     
-    <div class="ui-block-1 ui-field-contain">
+    <div class="ui-field-contain">
+        <input type="text" id="searchField" placeholder="závodník ..." >
+        <ul id="suggestions" data-role="listview" data-inset="true"></ul>
+        
+         <!--        
         <label for="name<?=$kid ?>-filter-menu">Jméno:</label>
         <select id="name<?=$kid ?>-filter-menu" data-native-menu="false" class="filterable-select" name="judoka">
             <option>Vyber závodníka ...</option>
             <!-- <option value="orange">Orange</option>
             <option value="apple">Apple</option>
             <option value="peach">Peach</option>
-            <option value="lemon">Lemon</option> -->
+            <option value="lemon">Lemon</option> - ->
         <?php
-        while ($row = $res->fetch_array()) {
+/*         while ($row = $res->fetch_array()) {
             printf("<option value=\"%d\">%s %s</option>", $row["id"], $row["prijmeni"], $row["jmeno"]);
         }
         $res->close();
-        ?>
+ */        ?>
         </select>
+         -->
+    <!-- script>
+
+        $("#mainPage").bind("pageshow", function(e) {
+
+            var autocompleteData = [
+                { label: "jiri petr", value: "val1"},
+                { label: "piri chmyri", value: "val2"},
+                { label: "vlada made", value: "val13"},
+                { label: "chlap toma", value: "val4"},
+                { label: "tomas comas", value: "val5"},
+            ];
+
+            $("#searchField").autocomplete({
+                target: $('#suggestions'),
+                source: autocompleteData,
+                callback: function(e) {
+                    var $a = $(e.currentTarget);
+                    $('#searchField').val( $a.data('autocomplete').value );
+                    $("#searchField").autocomplete('clear');
+                },
+                link: 'target.html?term=',
+                minLength: 1
+            });
+        });
+    </script> -->
+         
     </div>
  <div class="ui-grid-b">
     <div class="ui-block-a"  >
@@ -74,14 +109,15 @@ while ($s_vys->fetch()) {
             <option value="7">7</option>
             <option value="9">9</option>
         </select-->
-	    <input data-inline="true" data-clear-btn="false" name="position" id="in_pos" value="bez" type="number">
+	    <input data-inline="true" data-clear-btn="false" name="position" id="in_pos" value="" type="number">
     </div>
   </div>
 <!--  --> 
 <div class="ui-grid-a">
-    <div class="ui-block-a">   
+    <div class="ui-block-a" >   <!-- data-role="fieldcontain" -->
 
-    <label for="in_comment">Komentář: </label><input data-clear-btn="true" name="comment" id="in_comment" value="" type="text">
+    <label for="in_comment">Komentář: </label><!-- <input data-clear-btn="true" name="comment" id="in_comment" value="" type="text"> -->
+    <textarea rows="1" name="comment" id="in_comment"></textarea>
     </div>
 
     <div class="ui-block-d">

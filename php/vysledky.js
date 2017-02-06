@@ -95,31 +95,78 @@ $.mobile.document
     	var form = this.closest("form");
     	form.submit();
     })
+    // tabsload $( ".selector" ).on( "tabsload", function( event, ui ) {} );
+    .on("tabsload", "#tabs", function( event, ui ) {
+    	console.log("tabsload "); 
+    	//ui.panel.selector
+    	//ui.panel.context.id
+    	$(ui.panel.selector).trigger('create') ;
+    	$(ui.panel.selector + " input[id^='searchField']").trigger('searchField.postinit') ; // update current
+    	$("table#vysledky tr:even").css("background-color", "#F4F4F8");
+    	$("table#vysledky tr:odd").css("background-color", "#EFF1F1");
+    }  )
     
     .on("searchField.postinit", "input[id^='searchField']", function(event, data) {
         console.log("searchField.postinit " + event + "; ui " + data);
         
     //.on("pagecontainershow", function(e) {
     //+-*/.on("pagecontainercreate", function(e, ui) {
-    //-.on("show.postinit", )
+    //-.on("show.postinit", )	
     //+-*/	console.log("pagecontainercreate " + e + "; ui " + ui);
+        
+    	var this_id = this.id;
+    	var ident = this_id.substring(11);  // strlen("searchField") = 11 
+    	var $this_field = $("#"+this_id); 
+        
+    	/*if ($this_field !== null && $.isFunction($("#"+this.id).autocomplete))
+    	if ($)
+    	{
+    		console.log("searchField: skipping " + this.id + "; id of " + ident);
+    		return;
+   		}*/
+        
 		//var autocompleteData = $.parseJSON('[{"value":"AL","label":"Alabama"},{"value":"AK","label":"Alaska"},{"value":"AS","label":"American Samoa"},{"value":"AZ","label":"Arizona"},{"value":"AR","label":"Arkansas"},{"value":"CA","label":"California"},{"value":"CO","label":"Colorado"},{"value":"CT","label":"Connecticut"},{"value":"DE","label":"Delaware"},{"value":"DC","label":"District of Columbia"},{"value":"FL","label":"Florida"},{"value":"GA","label":"Georgia"},{"value":"GU","label":"Guam"},{"value":"HI","label":"Hawaii"},{"value":"ID","label":"Idaho"},{"value":"IL","label":"Illinois"},{"value":"IN","label":"Indiana"},{"value":"IA","label":"Iowa"},{"value":"KS","label":"Kansas"},{"value":"KY","label":"Kentucky"},{"value":"LA","label":"Louisiana"},{"value":"ME","label":"Maine"},{"value":"MD","label":"Maryland"},{"value":"MA","label":"Massachusetts"},{"value":"MI","label":"Michigan"},{"value":"MN","label":"Minnesota"},{"value":"MS","label":"Mississippi"},{"value":"MO","label":"Missouri"},{"value":"MT","label":"Montana"},{"value":"NE","label":"Nebraska"},{"value":"NV","label":"Nevada"},{"value":"NH","label":"New Hampshire"},{"value":"NJ","label":"New Jersey"},{"value":"NM","label":"New Mexico"},{"value":"NY","label":"New York"},{"value":"NC","label":"North Carolina"},{"value":"ND","label":"North Dakota"},{"value":"NI","label":"Northern Marianas Islands"},{"value":"OH","label":"Ohio"},{"value":"OK","label":"Oklahoma"},{"value":"OR","label":"Oregon"},{"value":"PA","label":"Pennsylvania"},{"value":"PR","label":"Puerto Rico"},{"value":"RI","label":"Rhode Island"},{"value":"SC","label":"South Carolina"},{"value":"SD","label":"South Dakota"},{"value":"TN","label":"Tennessee"},{"value":"TX","label":"Texas"},{"value":"UT","label":"Utah"},{"value":"VT","label":"Vermont"},{"value":"VI","label":"Virgin Islands"},{"value":"VA","label":"Virginia"},{"value":"WA","label":"Washington"},{"value":"WV","label":"West Virginia"},{"value":"WI","label":"Wisconsin"},{"value":"WY","label":"Wyoming"}]');
-    	var autocompleteData = [
+    	var autocompleteData;
+    	$.ajax({
+    		  url: "judoka.php",
+    		  dataType: 'json',
+    		  async: false,
+    		  data: "method=list&format=json&kid="+ident,
+    		  success: function(data) {
+    			  console.log( "judoka loaded" );
+        		  autocompleteData = data;
+    		  }
+    		});
+    	/*async $.getJSON( "judoka.php?method=list&format=json&kid="+ident, function( data ) {
+    		  console.log( "judoka loaded" );
+    		  autocompleteData = data;
+    	});*/
+    	
+    		/*[
             { label: "jiri petr", value: "val1"},
             { label: "piri chmyri", value: "val2"},
             { label: "vlada made", value: "val13"},
             { label: "chlap toma", value: "val4"},
             { label: "tomas comas", value: "val5"},
-        ];
+        ];*/
 
-		$("#searchField").autocomplete({
-			target: $('#suggestions'),
+		//-$("#searchField").autocomplete({
+    	console.log("searchField: hanging to " + this.id + "; id of " + ident);
+    	$this_field.autocomplete({
+			target: $('#suggestions' + ident),
 			source: autocompleteData,
+			//-source: 'judoka.php?method=search&format=json&kid='+ident,
 			matchFromStart: false,
 			callback: function(e) {
 				var $a = $(e.currentTarget);
-				$('#searchField').val( $a.data('autocomplete').value );
-				$("#searchField").autocomplete('clear');
+				var kule = $a.data();
+				console.log("callbacktest: id of " + ident);
+				//var that = $a.data;
+//				$('#searchField').val( $a.data('autocomplete').value );
+//				$("#searchField").autocomplete('clear');
+				$("#judoka"+ident).val($a.data('autocomplete').value );
+				$this_field.val( $a.data('autocomplete').label );
+				$this_field.autocomplete('clear');
 			},
 			link: 'zavodnik?name=',
 			minLength: 1
@@ -135,16 +182,16 @@ $.mobile.document
                 	var form = this.closest("form");
                 	var form_id = "#" + form.id; 
                 	var div = form.closest("div");
-                	var div_id = "#" + div.id;
-                	var kategory = $(form_id).find('#kat').val();
+                	//var div_id = "#" + div.id;
+                	//var kategory = $(form_id).find('#kat').val();
                 	//dtto var kategory = $(form_id).find('input[name="kat"]').val();
-                	var name = $(form_id).find('#name'+kategory+"-filter-menu").val();//-filter-menu
+                	//var name = $(form_id).find('#name'+kategory+"-filter-menu").val();//-filter-menu
                     //userHandler.username = $('#username').val();
                  
                     // Send data to server through the Ajax call
                     // action is functionality we want to call and outputJSON is our data
                     $.ajax({url: 'vysledky-row.php',
-                        data: {action : 'store', formData : $(form_id).serialize()},
+                        data: {action : 'store', formData : $(form).serialize()},
                         type: 'post',                  
                         async: 'true',
                         dataType: 'html',
@@ -159,8 +206,9 @@ $.mobile.document
                         success: function (result) {
                             // Check if authorization process was successful
                             //-if(result.status == 'success') {
-                            	$(div_id).html(result); 
-                                $(div_id).trigger('create') ;
+                        	var current_index = $("#tabs").tabs("option","selected");
+                            	$(div).html(result); 
+                                $(div).trigger('create') ;
                                 //userHandler.status = result.status;
                                 //$.mobile.changePage("#second");                        
                             //-} else {

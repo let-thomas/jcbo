@@ -1,28 +1,62 @@
+<!--  < ! DOCTYPE html> 
+<html>
+<body> -->
+<div data-role="main">
 <?php
 include 'dbc.php';
 // TODO check/save what come from ajax
 
-// v id je iz zavodu
-//$kid, $kname
-
-if (!isset($kid) or !isset($id))
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST["action"] === 'store') && isset($_POST["formData"]) ) // post zavodnika
 {
-	printf("<!-- kat/zav id unknown -->\n");
+	parse_str($_POST["formData"], $data);
+	$zavodnik_id = $data["j_id"];
+	$kat_id = $data["kat_id"];
+	$zavod_id = $data["z_id"];
+	/*$win = $_POST["win"];
+	$lose = $_POST["lose"];
+	$position = $_POST["position"];
+	$comment = $_POST["comment"];*/
+	
+	if (isset($zavodnik_id) && isset($kat_id) && isset($zavod_id))
+	{
+		if (!($stmt = $SQL->prepare("INSERT INTO vysledky(zavodnik_id, zavod_id, kategorie_id, win, lose, misto, komentar) VALUES (?,?,?,?,?,?,?)"))) {
+			echo "Prepare insert failed: (" . $SQL->errno . ") " . $SQL->error;
+			die();
+		}
+		
+		$stmt->bind_param('iiiiiis', $zavodnik_id, $zavod_id, $kat_id, $data["win"], $data["lose"], $data["position"], $data["comment"]);
+		$stmt->execute();
+		$stmt->close();
+	}
+}
+// v id je iz zavodu
+//$kat_id, $kname
+if (!isset($kat_id) or !isset($zavod_id))
+{
+	$zavod_id = $_GET["zid"];
+	$kat_id = $_GET["kid"];
+}
+
+if (!isset($kat_id) or !isset($zavod_id))
+{
+	printf("<!-- kat/zav id unknown -->\n</div>\n");
 	return;
 }
 // if kateg = 99 (pripravky) then kyu <= 5
-$query="select judoka.* from kategorie, judoka where kategorie.id=".$kid."  and year(narozen) between (year(curdate())-rdo) and (year(curdate())-rod)  order by prijmeni, jmeno;";
+$query="select judoka.* from kategorie, judoka where kategorie.id=".$kat_id."  and year(narozen) between (year(curdate())-rdo) and (year(curdate())-rod)  order by prijmeni, jmeno;";
 $res = $SQL->query($query) or die("Query failed: " . $SQL->error);
 		
-$q_vys="select jmeno, prijmeni, zavodnik_id, win, lose, misto from vysledky inner join judoka on (judoka.id=zavodnik_id) where zavod_id = ?"; // and kateg=
+$q_vys="select jmeno, prijmeni, zavodnik_id, win, lose, misto from vysledky inner join judoka on (judoka.id=zavodnik_id) where zavod_id = ? and kategorie_id=?";
 $s_vys = $SQL->prepare($q_vys);
-$s_vys->bind_param('i', $id);
+$s_vys->bind_param('ii', $zavod_id, $kat_id);
 $s_vys->execute();
 $s_vys->bind_result($jmeno, $prijmeni, $zavodnik_id, $win, $lose, $misto);
-
+$s_vys->store_result();
+//printf("<p>stmt->num_rows: %d</p>\n", $stmt->num_rows);
+if ($s_vys->num_rows > 0) {
 ?>
 <h5>kategorie <?=$kname ?></h5>
-<table data-role="table" data-mode="reflow" class="ui-responsive" >
+<table data-role="table" data-mode="reflow" class="ui-responsive" id="vysledky" >
 <thead>
 	<tr>
 	<th>Jméno</th><th>výhry</th><th>prohry</th><th>místo</th>
@@ -38,55 +72,19 @@ while ($s_vys->fetch()) {
 ?>
 </tbody>
 </table>
+<?php
+} // if some rows
+?>
 
-<form method="post" data-ajax="false" id="form<?=$kid ?>">
-    <input id="kat" name="kat" value="<?=$kid ?>" type="hidden" />
+<form method="post" data-ajax="false" id="form<?=$kat_id ?>">
+    <input id="kat" name="kat_id" value="<?=$kat_id ?>" type="hidden" />
+    <input id="zavod" name="z_id" value="<?=$zavod_id ?>" type="hidden" />
+    <input id="judoka<?=$kat_id ?>" name="j_id" value="" type="hidden" />
     
     <div class="ui-field-contain">
-        <input type="text" id="searchField" placeholder="závodník ..." >
-        <ul id="suggestions" data-role="listview" data-inset="true"></ul>
+        <input type="text" id="searchField<?=$kat_id ?>" placeholder="závodník ..." >
+        <ul id="suggestions<?=$kat_id ?>" data-role="listview" data-inset="true"></ul>
         
-         <!--        
-        <label for="name<?=$kid ?>-filter-menu">Jméno:</label>
-        <select id="name<?=$kid ?>-filter-menu" data-native-menu="false" class="filterable-select" name="judoka">
-            <option>Vyber závodníka ...</option>
-            <!-- <option value="orange">Orange</option>
-            <option value="apple">Apple</option>
-            <option value="peach">Peach</option>
-            <option value="lemon">Lemon</option> - ->
-        <?php
-/*         while ($row = $res->fetch_array()) {
-            printf("<option value=\"%d\">%s %s</option>", $row["id"], $row["prijmeni"], $row["jmeno"]);
-        }
-        $res->close();
- */        ?>
-        </select>
-         -->
-    <!-- script>
-
-        $("#mainPage").bind("pageshow", function(e) {
-
-            var autocompleteData = [
-                { label: "jiri petr", value: "val1"},
-                { label: "piri chmyri", value: "val2"},
-                { label: "vlada made", value: "val13"},
-                { label: "chlap toma", value: "val4"},
-                { label: "tomas comas", value: "val5"},
-            ];
-
-            $("#searchField").autocomplete({
-                target: $('#suggestions'),
-                source: autocompleteData,
-                callback: function(e) {
-                    var $a = $(e.currentTarget);
-                    $('#searchField').val( $a.data('autocomplete').value );
-                    $("#searchField").autocomplete('clear');
-                },
-                link: 'target.html?term=',
-                minLength: 1
-            });
-        });
-    </script> -->
          
     </div>
  <div class="ui-grid-b">
@@ -122,7 +120,7 @@ while ($s_vys->fetch()) {
 
     <div class="ui-block-d">
     <!-- <input type="submit" class="ui-btn ui-btn-inline" value="Ulozit a dalsi"> -->
-    <input type="button" data-theme="b" class="ui-btn ui-btn-inline" name="submit" id="submit" value="Ulozit a dalsi">
+    <input type="button" data-theme="b" class="ui-btn ui-btn-inline" name="action" id="store<?=$kat_id ?>" value="Ulozit a dalsi">
     </div>
   </div>
 </form>
@@ -130,3 +128,6 @@ while ($s_vys->fetch()) {
 <?php
 $SQL->close();
 ?>
+</div>
+<!-- </body>
+</html> -->

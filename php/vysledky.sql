@@ -1,4 +1,5 @@
 CREATE or replace TABLE vysledky (
+ id int NOT NULL AUTO_INCREMENT,
  zavodnik_id int not null,
  zavod_id int not null,
  kategorie_id smallint NOT NULL,
@@ -8,6 +9,7 @@ CREATE or replace TABLE vysledky (
  komentar varchar(2048),
  changed date not null,
  changedby varchar(32) not null,
+ PRIMARY KEY (id),
  UNIQUE KEY u_vt (zavodnik_id, zavod_id, kategorie_id),
  CONSTRAINT fk_v_j FOREIGN KEY (zavodnik_id) REFERENCES judoka( id),
  CONSTRAINT fk_v_z FOREIGN KEY (zavod_id) REFERENCES zavod( id),

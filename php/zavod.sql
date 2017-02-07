@@ -1,13 +1,14 @@
 CREATE or replace TABLE zavody_typ (
  id smallint NOT NULL AUTO_INCREMENT,
  nazev varchar(32) not null,
- column vaha decimal(4,2) not null,
- poradi smallint,
+ vaha decimal(4,2) not null default 1,
+ poradi smallint default 9,
  PRIMARY KEY (id),
  UNIQUE KEY u_zt (nazev)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 insert into zavody_typ(nazev) values
+('Turnaj Pripravek'),
 ('MalaCena'), 
 ('VelkaCena'),
 ('KrajskyPrebor'),
@@ -27,12 +28,6 @@ insert into zavody_typ(nazev) values
 ('EYO'),
 ('PSO');
 
-insert into zavody_typ(nazev, vaha, poradi) values ('Turnaj Pripravek', 1, 1);
-
-alter table zavody_typ add column vaha decimal(4,2);
-update zavody_typ set vaha=1;
-alter table zavody_typ add column poradi smallint;
-update zavody_typ set poradi=1;
 
 CREATE or replace TABLE zavod (
  id int NOT NULL AUTO_INCREMENT,

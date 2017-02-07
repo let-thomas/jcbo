@@ -7,7 +7,7 @@ CREATE or replace TABLE kategorie (
  UNIQUE KEY u_kat (nazev)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-insert into kategorie(nazev, start, end) values
+insert into kategorie(nazev, rod, rdo) values
 ('mláďata U11', 0, 10), 
 ('mladší žáci U13', 11, 12),
 ('mladší žačky U13', 11, 12),
@@ -25,9 +25,9 @@ insert into kategorie(nazev, start, end) values
 CREATE or replace TABLE zavod_kateg (
  zavod_id int not null,
  kateg_id smallint not null,
- UNIQUE KEY u_zkat (zavod_id,kateg_id)
+ UNIQUE KEY u_zkat (zavod_id,kateg_id),
  CONSTRAINT fk_zk_z FOREIGN KEY (zavod_id) REFERENCES zavod( id),
- CONSTRAINT fk_zk_k FOREIGN KEY (kateg_id) REFERENCES kategorie( id),
+ CONSTRAINT fk_zk_k FOREIGN KEY (kateg_id) REFERENCES kategorie( id)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 alter table kategorie add column rod smallint not null,

@@ -137,18 +137,7 @@ $.mobile.document
         		  autocompleteData = data;
     		  }
     		});
-    	/*async $.getJSON( "judoka.php?method=list&format=json&kid="+ident, function( data ) {
-    		  console.log( "judoka loaded" );
-    		  autocompleteData = data;
-    	});*/
     	
-    		/*[
-            { label: "jiri petr", value: "val1"},
-            { label: "piri chmyri", value: "val2"},
-            { label: "vlada made", value: "val13"},
-            { label: "chlap toma", value: "val4"},
-            { label: "tomas comas", value: "val5"},
-        ];*/
 
 		//-$("#searchField").autocomplete({
     	console.log("searchField: hanging to " + this.id + "; id of " + ident);
@@ -176,18 +165,21 @@ $.mobile.document
 //        var activePage = $(':mobile-pagecontainer').pagecontainer('getActivePage');
 //        if(activePage.attr('id') === 'login') {
 //-            $(document)
-            .on('click', '#submit', function(ev, handl) { // catch the form's submit event
+            .on('click', '[id^=store]', function(ev, handl) { // catch the form's submit event
                 //if($('#username').val().length > 0 && $('#password').val().length > 0)
                 { //ev.currentTarget
                 	var form = this.closest("form");
                 	var form_id = "#" + form.id; 
                 	var div = form.closest("div");
+                	//form.submit(); //does not work
+                	//$(form).ajaxSubmit({url: 'vysledky-row.php', type: 'post'});
                 	//var div_id = "#" + div.id;
                 	//var kategory = $(form_id).find('#kat').val();
                 	//dtto var kategory = $(form_id).find('input[name="kat"]').val();
                 	//var name = $(form_id).find('#name'+kategory+"-filter-menu").val();//-filter-menu
                     //userHandler.username = $('#username').val();
                  
+                	/**/
                     // Send data to server through the Ajax call
                     // action is functionality we want to call and outputJSON is our data
                     $.ajax({url: 'vysledky-row.php',
@@ -207,8 +199,10 @@ $.mobile.document
                             // Check if authorization process was successful
                             //-if(result.status == 'success') {
                         	var current_index = $("#tabs").tabs("option","selected");
-                            	$(div).html(result); 
-                                $(div).trigger('create') ;
+                        	$("#tabs").tabs('load',current_index);
+                            //toto je ok ... $(div).html(result); 
+                            //$(div).trigger('create') ;
+                            //$('#tabs').trigger('tabsload');
                                 //userHandler.status = result.status;
                                 //$.mobile.changePage("#second");                        
                             //-} else {
@@ -219,7 +213,7 @@ $.mobile.document
                             // This callback function will trigger on unsuccessful action               
                             alert('Network error has occurred please try again!');
                         }
-                    });                  
+                    });/**/                  
                 }
                 //else {
                 //    alert('Please fill all necessary fields');

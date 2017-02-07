@@ -2,6 +2,7 @@
 <html>
 <head>
 <?php
+include 'dbc.php';
 unset($id);
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["id"]))
 {
@@ -13,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET["id"]))
 }
 if (isset($id))
 {
-    include 'dbc.php';
     $query = sprintf("select zavod.*, DATE_FORMAT(kdy,'%%d.%%m.%%Y') as kdyf from zavod where id=%d;", $id); // if id is not number it fails
     $res = $SQL->query($query) or die("Query failed (".$query . "): ".$SQL->errno.": " . $SQL->error);
     $zavod = $res->fetch_array();
@@ -102,7 +102,6 @@ if (isset($id))
     <td><label for="text-basic">Typ:</label>
     <td><select name="typ">
     <?php
-    include 'dbc.php';
     $qry = "select id, nazev from zavody_typ order by poradi, nazev";
     $result_res = $SQL->query($qry) or die("Query failed: " . $SQL->error);
     while ($zav_typ = $result_res->fetch_array()) { ?>
@@ -125,7 +124,7 @@ if (isset($id))
         {
         	$refid = -1;
         }
-	    $qry = sprintf("select kategorie.id, nazev, zavod_kateg.kateg_id from kategorie left join jcbo.zavod_kateg on (kategorie.id=zavod_kateg.kateg_id and zavod_kateg.zavod_id = %d ) order by id", $refid);
+	    $qry = sprintf("select kategorie.id, nazev, zavod_kateg.kateg_id from kategorie left join zavod_kateg on (kategorie.id=zavod_kateg.kateg_id and zavod_kateg.zavod_id = %d ) order by id", $refid);
 	    $result_res = $SQL->query($qry) or die("Query failed: " . $SQL->error);
 	    while ($kateg = $result_res->fetch_array()) {
 	    	// kat[] is php specific!  ?>

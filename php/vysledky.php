@@ -10,7 +10,7 @@
     <!-- <script src="jquery-3.1.1.min.js"></script> -->
     <script src="jquery.mobile-1.4.5.min.js" ></script>
     <!-- <script src="jquery-ui.js" ></script> -->
-    <script src="jqm.autoComplete-1.5.2.js"></script>
+    <script src="jqm.autoComplete-1.5.2-min.js"></script>
 <!--  
     <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
@@ -72,44 +72,7 @@ if (!isset($zavod_id))
     // + rok
 } else 
 {
-	/*
-	$query=sprintf("select id, nazev, kdy from zavod where id=%d",$zavod_id);
-	$result = $SQL->query($query) or die("Query failed: " . $SQL->error);
-	if ($row = $result->fetch_array()) {
-		/*
-	         <!--  h3>Vysledky turnaje <?=$row["nazev"]?> <?=$row["kdy"]?></h3 -->
-	         <script>
-	         console.log( "delame!" );
-	         
-	         var dataString = "z_id="+<?=$zavod_id ?>; 
-	
-	         $.ajax({ 
-	           type: "POST", 
-	           url: "vysledky-data.php", 
-	           data: dataString, 
-	           complete: function() { 
-	               var obj = $("#searchField"); 
-	               console.log("po ajaxu\n"); },
-	           success: function(result){ 
-	             $("#show").html(result);
-	             var obj = $("#searchField"); 
-	             console.log("pre create\n");
-	             $("#show").trigger('create') ;
-	             $("#show").trigger('show.postinit') ;
-	             $("input[id^='searchField']").trigger('searchField.postinit') ;
-	
-	             console.log("post create\n");
-	             //$("#jakotable").trigger('create') ;
-	           }
-	         });
-	         
-	         </script>
-	         ?>
-	    <?php* /
-		
-	    }
-	    $result->close();
-	    */
+	//printf("<p>v elsu</p>\n");
 	$qry ="select zavod.id as zid, zavod.nazev as zname, kategorie.id as kid, kategorie.nazev as kname  from zavod ";
 	$qry.=" left join zavod_kateg on (zavod.id=zavod_id) ";
 	$qry.=" left join kategorie on (kategorie.id = kateg_id) ";
@@ -137,7 +100,10 @@ if (!isset($zavod_id))
 	}
 	
 	$first_kat = $kid;
-	if ($stmt->num_rows > 1)
+	if ($stmt->num_rows < 1)
+	{
+		printf("Nejsou zadane kategorie!");
+	} else 
 	{
 ?>
 
@@ -166,10 +132,6 @@ if (!isset($zavod_id))
 </div>
 <?php
 	} // if more then 1
-	else {
-		//printf("<p>no proste nemam</p>\n");
-	}
-	// printout results of first kat
 ?>
 
 <?php 	

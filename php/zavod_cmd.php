@@ -1,7 +1,17 @@
-<!DOCTYPE head PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<?php
+/*
+<!DOCTYPE html>
 <html>
 <body>
-<?php
+</body>
+</html>
+
+ */
+function sql_error($msg) {
+	printf("<!DOCTYPE html>\n<html>\n<body>\n");
+	printf("<p>%s</p>", msg);
+	printf("\n</body>\n</html>\n");
+}
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
 	// create record
@@ -10,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	if (isset($id) && strlen($id)>0) // if passed id the update
 	{
 		if (!($stmt = $SQL->prepare("update zavod set nazev=?, kdy=STR_TO_DATE(?,'%d.%m.%Y'), kde=?, type_id=?, vedouci_id=?, pozvanka=? where id=?"))) {
-			echo "Prepare update failed: (" . $SQL->errno . ") " . $SQL->error;
+			sql_error("Prepare update failed: (" . $SQL->errno . ") " . $SQL->error);
 			die();
 		}
 		$stmt->bind_param('sssiisi', $_POST["nazev"], $_POST["kdy"], $_POST["kde"], $_POST["typ"], $_POST["tren_id"], $_POST["pozvanka"], $id);
@@ -18,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	{
 		unset($id);
 		if (!($stmt = $SQL->prepare("INSERT INTO zavod(nazev, kdy, kde, type_id, vedouci_id, pozvanka) VALUES (?,STR_TO_DATE(?,'%d.%m.%Y'),?,?,?,?)"))) {
-			echo "Prepare insert failed: (" . $SQL->errno . ") " . $SQL->error; 
+			sql_error("Prepare insert failed: (" . $SQL->errno . ") " . $SQL->error); 
 			die();
 		}
 		$stmt->bind_param('sssiis', $_POST["nazev"], $_POST["kdy"], $_POST["kde"], $_POST["typ"], $_POST["tren_id"], $_POST["pozvanka"]);
@@ -44,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	$kat_arr = $_POST["kat"];
 	//printf("kategories: %s.\n", $kat_arr);
 	if (!($stmt = $SQL->prepare("insert into zavod_kateg(zavod_id, kateg_id) values (?,?);"))) {
-		echo "Prepare insert2 failed: (" . $SQL->errno . ") " . $SQL->error;
+		sql_error("Prepare insert2 failed: (" . $SQL->errno . ") " . $SQL->error);
 		die();
 	}
 	$stmt->bind_param('ii', $zavod_id, $kat_id);
@@ -58,8 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	
 	$SQL->close();
 	
-	include 'vysledky.php';
-
+	//include 'vysledky.php';
+	header("Location: " . $_SERVER['CONTEXT_PREFIX'] . "/vysledky.php?z_id=" . $zavod_id); /* Redirect browser */
+	die();
 } else
 {
 	//printf("<p>jsem v tom else\n</body></html>");

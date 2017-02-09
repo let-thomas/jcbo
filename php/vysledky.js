@@ -211,9 +211,9 @@ $.mobile.document
 	})
 	.on('click', '[id^=store]', function(ev, handl) { // catch the form's submit event
                 { //ev.currentTarget
-                	var form = this.closest("form");
+                	var form = $(this).closest("form");
                 	var form_id = "#" + form.id; 
-                	var div = form.closest("div");
+                	var div = $(form).closest("div");
                 	//form.submit(); //does not work
                 	//$(form).ajaxSubmit({url: 'vysledky-row.php', type: 'post'});
                 	//var div_id = "#" + div.id;

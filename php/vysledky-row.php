@@ -1,6 +1,8 @@
-<!--  < ! DOCTYPE html> 
-<html>
-<body> -->
+<?php
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+?>
 <div data-role="main">
 <?php
 include 'dbc.php';
@@ -18,10 +20,6 @@ if (!isset($kat_id) or !isset($zavod_id))
 	return;
 }
 // if kateg = 99 (pripravky) then kyu <= 5
-/*
-$query="select judoka.* from kategorie, judoka where kategorie.id=".$kat_id."  and year(narozen) between (year(curdate())-rdo) and (year(curdate())-rod)  order by prijmeni, jmeno;";
-$res = $SQL->query($query) or die("Query failed: " . $SQL->error);
-*/
 		
 $q_vys="select results.id, jmeno, prijmeni, zavodnik_id, win, lose, misto, vaha, komentar from results inner join judoka on (judoka.id=zavodnik_id) where zavod_id = ? and kategorie_id=?";
 $s_vys = $SQL->prepare($q_vys);
@@ -95,11 +93,11 @@ while ($s_vys->fetch()) {// background-color ?>
     </div>
     <div class="ui-block-c">
         <label for="in_pos">Umístění</label>
-	    <input data-inline="true" data-clear-btn="false" name="position" id="in_pos" value="" type="number" tabindex="4">
+	    <input data-inline="true" data-clear-btn="false" name="position" id="in_pos" value="" type="number" tabindex="4" title="bez= nevyplňovat">
     </div>
     <div class="ui-block-d">
         <label for="in_wgh">Váha</label>
-        <input data-inline="true" data-clear-btn="false" name="vaha" id="in_wgh" value="" type="number" tabindex="5">
+        <input data-inline="true" data-clear-btn="false" name="vaha" id="in_wgh" value="" type="number" tabindex="5" title="">
     </div>
   </div>
 <!--  --> 

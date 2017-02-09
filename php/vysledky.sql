@@ -21,3 +21,4 @@ FOR EACH ROW
 set new.changed = now();
 
 alter table results add column  vaha smallint not null default 0;
+alter table results add column body  smallint not null default 0;

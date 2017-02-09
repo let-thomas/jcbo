@@ -1,4 +1,8 @@
 <?php
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
 include 'dbc.php';
 // TODO check/save what come from ajax
 
@@ -13,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST["action"] === 'store') && i
 	 $position = $_POST["position"];
 	 $comment = $_POST["comment"];*/
 
-	if (isset($data["v_id"])) // update vysledku
+	if (isset($data["v_id"]) && $data["v_id"] > 0) // update vysledku
 	{
 		if (!($stmt = $SQL->prepare("UPDATE results set win=?, lose=?, misto=?, komentar=?, vaha=? where id=?"))) {
 			echo "Prepare update failed: (" . $SQL->errno . ") " . $SQL->error;

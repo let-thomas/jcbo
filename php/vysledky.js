@@ -161,12 +161,55 @@ $.mobile.document
 			minLength: 1
 		});
 	})
-//-    .on('pagecontainershow', function (e, ui) {
-//        var activePage = $(':mobile-pagecontainer').pagecontainer('getActivePage');
-//        if(activePage.attr('id') === 'login') {
-//-            $(document)
-            .on('click', '[id^=store]', function(ev, handl) { // catch the form's submit event
-                //if($('#username').val().length > 0 && $('#password').val().length > 0)
+	.on('click', '[id^=del_]', function(ev, handl) {
+		var div_id = ev.target.id;
+		var v_id = div_id.substring(4);  // strlen("del_") = 4 
+		$.ajax({url: 'vysledky_cmd.php',
+            data: {action : 'delete', id: v_id},
+            type: 'post',                  
+            async: 'false',
+            dataType: 'html',
+            beforeSend: function() {
+                // This callback function will trigger before data is sent
+                $.mobile.loading('show'); // This will show Ajax spinner
+            },
+            complete: function() {
+                // This callback function will trigger on data sent/received complete   
+                $.mobile.loading('hide'); // This will hide Ajax spinner
+            },
+            success: function (result) {
+            	var current_index = $("#tabs").tabs("option","selected");
+            	$("#tabs").tabs('load',current_index);
+            },
+            error: function (request,error) {
+                // This callback function will trigger on unsuccessful action               
+                alert('Network error has occurred please try again!');
+            }
+        });		
+		
+	})
+	.on('click', '[id^=edit_]', function(ev, handl) {
+	    var div_id = ev.target.id;
+        var v_id = div_id.substring(5);  // strlen("edit_") = 5 
+        
+        var test = $("#td_" + v_id + " [name='win']").val();
+        var kat = $("#td_" + v_id + " [name='kat_id']").val();
+        var form_id = "#" + $("#form"+kat).attr("id");
+        
+        $(form_id + " #in_win").val(test); //  [name='win']
+        $(form_id + " #in_lose").val($("#td_" + v_id + " [name='lose']").val()); //  [name='lose']
+        $(form_id + " #in_wgh").val($("#td_" + v_id + " [name='vaha']").val());
+        $(form_id + " #in_comment").val($("#td_" + v_id + " [name='komentar']").val()); 
+        test = $("#td_" + v_id + " [name='misto']").val();
+        if (test === 'bez') $(form_id + " #in_pos").val("");
+        else $(form_id + " #in_pos").val(test);
+        $("#searchField"+kat).val(lidi[v_id]);
+        $("#searchField"+kat).prop('disabled', true);
+        $(form_id + " #v_id").val(v_id);
+        
+        
+	})
+	.on('click', '[id^=store]', function(ev, handl) { // catch the form's submit event
                 { //ev.currentTarget
                 	var form = this.closest("form");
                 	var form_id = "#" + form.id; 
@@ -182,7 +225,7 @@ $.mobile.document
                 	/**/
                     // Send data to server through the Ajax call
                     // action is functionality we want to call and outputJSON is our data
-                    $.ajax({url: 'vysledky-row.php',
+                    $.ajax({url: 'vysledky_cmd.php',
                         data: {action : 'store', formData : $(form).serialize()},
                         type: 'post',                  
                         async: 'true',
@@ -198,7 +241,8 @@ $.mobile.document
                         success: function (result) {
                             // Check if authorization process was successful
                             //-if(result.status == 'success') {
-                        	var current_index = $("#tabs").tabs("option","selected");
+                        	var current_index = $("#tabs").tabs("option","active");
+                        	console.log("tabs current_index " +current_index);
                         	$("#tabs").tabs('load',current_index);
                             //toto je ok ... $(div).html(result); 
                             //$(div).trigger('create') ;

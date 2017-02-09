@@ -19,3 +19,5 @@ CREATE or replace TABLE vysledky (
 CREATE TRIGGER bi_vysledky BEFORE INSERT ON vysledky
 FOR EACH ROW 
 set new.changed = now();
+
+alter table results add column  vaha smallint not null default 0;

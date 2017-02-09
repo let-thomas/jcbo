@@ -34,7 +34,7 @@
 
 
     <div role="main" class="ui-content">
-
+<div>TODO: intro</div>
 <?php
 include 'dbc.php';
 
@@ -50,7 +50,7 @@ if (!isset($zavod_id))
 if (isset($zavod_id))
 {
 
-$q_vys ="select jmeno, prijmeni, zavodnik_id, win, lose, misto, komentar, nazev  from vysledky "; 
+$q_vys ="select jmeno, prijmeni, zavodnik_id, win, lose, misto, komentar, vaha, nazev  from results "; 
 $q_vys.="inner join judoka on (judoka.id=zavodnik_id) ";
 $q_vys.="inner join kategorie on (kategorie.id = kategorie_id) ";
 $q_vys.="where zavod_id = ? ";
@@ -63,28 +63,40 @@ if (! $s_vys) {
 }
 $s_vys->bind_param('i', $zavod_id);
 $s_vys->execute();
-$s_vys->bind_result($jmeno, $prijmeni, $zavodnik_id, $win, $lose, $misto, $komentar, $kat_nazev);
+$s_vys->bind_result($jmeno, $prijmeni, $zavodnik_id, $win, $lose, $misto, $komentar, $vaha, $kat_nazev);
 $s_vys->store_result();
 
 $kat_nazev_was = "";
 ?>
-<table data-role="table" data-mode="reflow" class="ui-responsive" id="vysledky" >
-<thead>
-<tr style='background-color:rgb(233,233,233)'>
-<th>Jméno</th><th>výhry</th><th>prohry</th><th>místo</th>
-</tr>
-</thead>
-<tbody>
 <?php
 while ($s_vys->fetch()) {
-	printf("<tr style='background-color:#F4F4F8'>\n");
-	printf("<td><strong>%s %s</strong></td><td>%d</td><td>%d</td><td>%s</td>\n", $jmeno, $prijmeni, $win, $lose, (isset($misto)&&$misto>0)?$misto:"bez" );
-	printf("</tr>\n");
-	if (isset($komentar) && $komentar !== '') {
-		printf("<tr >\n");
-		printf("<td colspan='4'><i>%s</i></td>\n", $komentar );
-		printf("</tr>\n");
+	if ($kat_nazev !== $kat_nazev_was)
+	{?>
+        <h3>Kategorie <?= $kat_nazev?></h3>
+        <div class="ui-grid-d ui-responsive" style='background-color:rgb(233,233,233)'>
+            <div class="ui-block-a">Jméno</div>
+            <div class="ui-block-b">váha</div>
+            <div class="ui-block-c">výhry</div>
+            <div class="ui-block-d">prohry</div>
+            <div class="ui-block-e">místo</div>
+        </div>
+        <?php  
+        $kat_nazev_was = $kat_nazev;
 	}
+?>
+	<div class="ui-grid-d ui-responsive" style='background-color:#F4F4F8'>
+		<div class="ui-block-a"><strong><?=$jmeno ." " . $prijmeni ?></strong></div>
+        <div class="ui-block-b"><?=$vaha?>kg</div>
+		<div class="ui-block-c"><?=$win?></div>
+		<div class="ui-block-d"><?=$lose?></div>
+		<div class="ui-block-e"><?=(isset($misto)&&$misto>0)?$misto:"bez"?></div>
+	</div>
+<?php 
+	if (isset($komentar) && $komentar !== '') {?>
+		<div class='ui-grid-solo ui-responsive'>
+        <div class="ui-block-a"><i><?=$komentar?></i><br/>&nbsp;</div>
+		</div>
+<?php }
 }
 ?>
 </tbody>
@@ -96,6 +108,8 @@ $SQL->close();
 	printf("I do not know which competition!");
 }
 ?>
+<div>TODO: zhodnoceni</div>
+<div>Reklamy?</div>
     </div><!-- main -->
 </div><!-- page -->
 

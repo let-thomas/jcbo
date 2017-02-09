@@ -43,7 +43,7 @@ while ($zavod = $res->fetch_array()) {
         <td><?=$zavod["kdy"] ?></td>
         <td><a href="zavod.php?id=<?=$zavod["id"] ?>" class="ui-btn ui-corner-all">editace</a></td>
         <td><a href="vysledky.php?z_id=<?=$zavod["id"] ?>" class="ui-btn ui-corner-all">vysledky</a></td>
-        <td><a href="zprava.php?id=<?=$zavod["id"] ?>" class="ui-btn ui-corner-all ui-state-disabled">zprava</a></td>
+        <td><a href="zprava.php?z_id=<?=$zavod["id"] ?>" class="ui-btn ui-corner-all">zprava</a></td>
     </li>
     </tr>
 <?php 

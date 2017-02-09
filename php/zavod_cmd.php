@@ -7,6 +7,8 @@
 </html>
 
  */
+include 'common.inc';
+
 function sql_error($msg) {
 	printf("<!DOCTYPE html>\n<html>\n<body>\n");
 	printf("<p>%s</p>", msg);
@@ -27,11 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	} else
 	{
 		unset($id);
-		if (!($stmt = $SQL->prepare("INSERT INTO zavod(nazev, kdy, kde, type_id, vedouci_id, pozvanka) VALUES (?,STR_TO_DATE(?,'%d.%m.%Y'),?,?,?,?)"))) {
+		if (!($stmt = $SQL->prepare("INSERT INTO zavod(nazev, kdy, kde, type_id, vedouci_id, pozvanka) VALUES (?,STR_TO_DATE(?,'%d.%m.%Y'),?,?,1,?)"))) {
 			sql_error("Prepare insert failed: (" . $SQL->errno . ") " . $SQL->error); 
 			die();
 		}
-		$stmt->bind_param('sssiis', $_POST["nazev"], $_POST["kdy"], $_POST["kde"], $_POST["typ"], $_POST["tren_id"], $_POST["pozvanka"]);
+		$stmt->bind_param('sssis', $_POST["nazev"], $_POST["kdy"], $_POST["kde"], $_POST["typ"], /*$_POST["tren_id"],*/ $_POST["pozvanka"]);
 	}
 	$stmt->execute();
 	if (isset($id))
@@ -69,14 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	$SQL->close();
 	
 	//include 'vysledky.php';
-	header("Location: " . $_SERVER['CONTEXT_PREFIX'] . "/vysledky.php?z_id=" . $zavod_id); /* Redirect browser */
+	header("Location: " . $CTX_PREFIX . "/vysledky.php?z_id=" . $zavod_id); /* Redirect browser */
 	die();
 } else
 {
 	//printf("<p>jsem v tom else\n</body></html>");
 	
 	//nejaky error, redirect na index
-	header("Location: " . $_SERVER['CONTEXT_PREFIX'] );
+	header("Location: " . $CTX_PREFIX );
 	die();
 	
 	/*

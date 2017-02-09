@@ -23,6 +23,9 @@
     .ui-li-static { padding: 0 0;}
     
     </style>
+    <script type="text/javascript">
+    var lidi = [];
+    </script>
     
 </head>
 <body>
@@ -52,11 +55,12 @@ if (!isset($zavod_id))
 	// show selection
 	?>
     <form method="post" action="vysledky.php">
-    <div class="ui-field-contain">
-        <label for="zavod-filter-menu">Vyber turnaj:</label></td>
-            <select id="zavod-filter-menu" data-native-menu="false" class="filterable-select" name="z_id">
+    <div class="ui-field-contain ">
+        <label for="zavod-filter-menu">Vyber turnaj:</label>
+<!--         <div class="ui-btn ui-btn-inline"> -->
+        <select id="zavod-filter-menu" data-native-menu="false" class="filterable-select" name="z_id" data-inline='true' >
             <option>Vyber závod ...</option>
-         <?php
+         <?php // onchange="myFunction()"
          $query="select id, nazev, kdy from zavod order by kdy"; // where year(kdy)=year(now) ";
          $result = $SQL->query($query) or die("Query failed: " . $SQL->error);
          while ($row = $result->fetch_array()) {?>
@@ -66,6 +70,9 @@ if (!isset($zavod_id))
          $result->close();
          ?>
         </select>
+<!--         </div> -->
+        <input type='submit' data-icon='action' data-iconpos='notext' value='Icon only' data-inline='true'  id="go">
+        <!-- class="ui-btn-inline"  -->
     </div>
     </form>    
     <?php

@@ -21,7 +21,7 @@ if (!isset($kat_id) or !isset($zavod_id))
 }
 // if kateg = 99 (pripravky) then kyu <= 5
 		
-$q_vys="select results.id, jmeno, prijmeni, zavodnik_id, win, lose, misto, vaha, komentar from results inner join judoka on (judoka.id=zavodnik_id) where zavod_id = ? and kategorie_id=?";
+$q_vys="select vysledky.id, jmeno, prijmeni, zavodnik_id, vyhry, prohry, misto, vaha, komentar from vysledky inner join judoka on (judoka.id=zavodnik_id) where zavod_id = ? and kategorie_id=?";
 $s_vys = $SQL->prepare($q_vys);
 if (! $s_vys) {
 	printf("prepare error: %s\n", $SQL->error);
@@ -30,7 +30,7 @@ if (! $s_vys) {
 }
 $s_vys->bind_param('ii', $zavod_id, $kat_id);
 $s_vys->execute();
-$s_vys->bind_result($vysledek_id, $jmeno, $prijmeni, $zavodnik_id, $win, $lose, $misto, $vaha, $komentar);
+$s_vys->bind_result($vysledek_id, $jmeno, $prijmeni, $zavodnik_id, $vyhry, $prohry, $misto, $vaha, $komentar);
 $s_vys->store_result();
 //printf("<p>stmt->num_rows: %d</p>\n", $stmt->num_rows);
 if ($s_vys->num_rows > 0) {
@@ -49,8 +49,8 @@ while ($s_vys->fetch()) {// background-color ?>
     <td id="td_<?=$vysledek_id ?>"><?= $jmeno ?> <?= $prijmeni?> 
         <input type='button' data-icon='edit ' data-iconpos='notext' value='Icon only' data-inline='true' id="edit_<?=$vysledek_id ?>">
         <input type='button' data-icon='delete' data-iconpos='notext' value='Icon only' data-inline='true' id="del_<?=$vysledek_id ?>">
-        <input type="hidden" name="win" value="<?=$win?>"> 
-        <input type="hidden" name="lose" value="<?=$lose?>">
+        <input type="hidden" name="vyhry" value="<?=$vyhry?>"> 
+        <input type="hidden" name="prohry" value="<?=$prohry?>">
         <input type="hidden" name="misto" value="<?=$misto?>">
         <input type="hidden" name="vaha" value="<?=$vaha?>">
         <input type="hidden" name="komentar" value="<?=$komentar?>">
@@ -60,7 +60,7 @@ while ($s_vys->fetch()) {// background-color ?>
         </script>
     </td>
     <?php 
-    printf("<td>%d</td><td>%d</td><td>%s</td>\n", $win, $lose, (isset($misto)&&$misto>0)?$misto:"bez" );
+    printf("<td>%d</td><td>%d</td><td>%s</td>\n", $vyhry, $prohry, (isset($misto)&&$misto>0)?$misto:"bez" );
     printf("</tr>\n");
 }
 ?>
@@ -85,11 +85,11 @@ while ($s_vys->fetch()) {// background-color ?>
   <div class="ui-grid-c">
     <div class="ui-block-a"  >
         <label for="in_win">Vítězství</label>
-	   <input data-clear-btn="false" name="win" id="in_win" value="" type="number" tabindex="2">
+	   <input data-clear-btn="false" name="vyhry" id="in_win" value="" type="number" tabindex="2">
     </div>
     <div class="ui-block-b">
         <label for="in_lose">Prohry</label>
-	   <input data-clear-btn="false" name="lose" id="in_lose" value="" type="number" tabindex="3">
+	   <input data-clear-btn="false" name="prohry" id="in_lose" value="" type="number" tabindex="3">
     </div>
     <div class="ui-block-c">
         <label for="in_pos">Umístění</label>

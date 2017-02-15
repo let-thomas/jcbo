@@ -178,7 +178,7 @@ $.mobile.document
                 $.mobile.loading('hide'); // This will hide Ajax spinner
             },
             success: function (result) {
-            	var current_index = $("#tabs").tabs("option","selected");
+            	var current_index = $("#tabs").tabs("option","active");
             	$("#tabs").tabs('load',current_index);
             },
             error: function (request,error) {

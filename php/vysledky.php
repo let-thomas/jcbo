@@ -38,6 +38,7 @@ header("Pragma: no-cache");
 
     <?php
     $nav_menu="vysledky";
+    $nav_title="1JCBO - Výsledky závodu";
     include 'header.inc';
     ?>
 

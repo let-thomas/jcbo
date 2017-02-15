@@ -1,4 +1,9 @@
 <!DOCTYPE html> 
+<?php
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+?>
 <html>
 <title>1JCBO - Zpráva ze závodu</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -50,7 +55,7 @@ if (!isset($zavod_id))
 if (isset($zavod_id))
 {
 
-$q_vys ="select jmeno, prijmeni, zavodnik_id, win, lose, misto, komentar, vaha, nazev  from results "; 
+$q_vys ="select jmeno, prijmeni, zavodnik_id, vyhry, prohry, misto, komentar, vaha, nazev  from vysledky "; 
 $q_vys.="inner join judoka on (judoka.id=zavodnik_id) ";
 $q_vys.="inner join kategorie on (kategorie.id = kategorie_id) ";
 $q_vys.="where zavod_id = ? ";
@@ -63,7 +68,7 @@ if (! $s_vys) {
 }
 $s_vys->bind_param('i', $zavod_id);
 $s_vys->execute();
-$s_vys->bind_result($jmeno, $prijmeni, $zavodnik_id, $win, $lose, $misto, $komentar, $vaha, $kat_nazev);
+$s_vys->bind_result($jmeno, $prijmeni, $zavodnik_id, $vyhry, $prohry, $misto, $komentar, $vaha, $kat_nazev);
 $s_vys->store_result();
 
 $kat_nazev_was = "";
@@ -87,8 +92,8 @@ while ($s_vys->fetch()) {
 	<div class="ui-grid-d ui-responsive" style='background-color:#F4F4F8'>
 		<div class="ui-block-a"><strong><?=$jmeno ." " . $prijmeni ?></strong></div>
         <div class="ui-block-b"><?=$vaha?>kg</div>
-		<div class="ui-block-c"><?=$win?></div>
-		<div class="ui-block-d"><?=$lose?></div>
+		<div class="ui-block-c"><?=$vyhry?></div>
+		<div class="ui-block-d"><?=$prohry?></div>
 		<div class="ui-block-e"><?=(isset($misto)&&$misto>0)?$misto:"bez"?></div>
 	</div>
 <?php 

@@ -192,12 +192,12 @@ $.mobile.document
 	    var div_id = ev.target.id;
         var v_id = div_id.substring(5);  // strlen("edit_") = 5 
         
-        var test = $("#td_" + v_id + " [name='win']").val();
+        var test = $("#td_" + v_id + " [name='vyhry']").val();
         var kat = $("#td_" + v_id + " [name='kat_id']").val();
         var form_id = "#" + $("#form"+kat).attr("id");
         
         $(form_id + " #in_win").val(test); //  [name='win']
-        $(form_id + " #in_lose").val($("#td_" + v_id + " [name='lose']").val()); //  [name='lose']
+        $(form_id + " #in_lose").val($("#td_" + v_id + " [name='prohry']").val()); 
         $(form_id + " #in_wgh").val($("#td_" + v_id + " [name='vaha']").val());
         $(form_id + " #in_comment").val($("#td_" + v_id + " [name='komentar']").val()); 
         test = $("#td_" + v_id + " [name='misto']").val();

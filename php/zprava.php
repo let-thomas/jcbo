@@ -8,18 +8,10 @@ header("Pragma: no-cache");
 <title>1JCBO - Zpráva ze závodu</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="jquery.mobile-1.4.5.min.css" />
-    <!-- <link rel="stylesheet" href="jquery-ui.css"> -->
     <link rel="stylesheet" href="jcbo.css">
     <script src="jquery.js"></script>
-    <!-- <script src="jquery-3.1.1.min.js"></script> -->
     <script src="jquery.mobile-1.4.5.min.js" ></script>
-    <!-- <script src="jquery-ui.js" ></script> -->
     <script src="jqm.autoComplete-1.5.2-min.js"></script>
-<!--  
-    <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
-    <script src="jqm.autoComplete-1.5.2-min.js"></script> -->
-    
     <meta charset="UTF-8">
     <style>
     li { border-style: none; }
@@ -34,12 +26,14 @@ header("Pragma: no-cache");
 
     <?php
     $nav_menu="zprava";
+    $nav_title="1JCBO - zpráva trenéra";
     include 'header.inc';
     ?>
 
 
     <div role="main" class="ui-content">
-<div>TODO: intro</div>
+    <h3>Zpráva trenéra</h3>
+
 <?php
 include 'dbc.php';
 
@@ -54,9 +48,37 @@ if (!isset($zavod_id))
 
 if (isset($zavod_id))
 {
+$q_zavod="select nazev, kdy, kde from zavod where id=?";
+$s_zavod = $SQL->prepare($q_zavod);
+if (! $s_zavod) {
+	printf("prepare error: %s\n", $SQL->error);
+	header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+	die();
+}
+$s_zavod->bind_param('i', $zavod_id);
+$s_zavod->execute();
+$s_zavod->bind_result($nazev, $kdy, $kde);
+if ($s_zavod->fetch())
+{
+	?>
+    <h2><?=$nazev ?></h2>
+    <div class="ui-grid-a ui-responsive" >
+            <div class="ui-block-a">Datum</div>
+            <div class="ui-block-b"><?=$kdy?></div>
+            <div class="ui-block-a">Kde</div>
+            <div class="ui-block-b"><?=$kde?></div>
+   </div>
+    
+    <?php 
+} else
+{
+	printf("<!-- no fetch -->\n");
+}
+$s_zavod->close();
 
-$q_vys ="select jmeno, prijmeni, zavodnik_id, vyhry, prohry, misto, komentar, vaha, nazev  from vysledky "; 
-$q_vys.="inner join judoka on (judoka.id=zavodnik_id) ";
+
+$q_vys ="select jmeno, prijmeni, zavodnik_id, vyhry, prohry, misto, komentar, vaha, nazev, bodu  from vysledky "; 
+$q_vys.="inner join clen on (clen.id=zavodnik_id) ";
 $q_vys.="inner join kategorie on (kategorie.id = kategorie_id) ";
 $q_vys.="where zavod_id = ? ";
 $q_vys.="order by kategorie_id, prijmeni";
@@ -68,7 +90,7 @@ if (! $s_vys) {
 }
 $s_vys->bind_param('i', $zavod_id);
 $s_vys->execute();
-$s_vys->bind_result($jmeno, $prijmeni, $zavodnik_id, $vyhry, $prohry, $misto, $komentar, $vaha, $kat_nazev);
+$s_vys->bind_result($jmeno, $prijmeni, $zavodnik_id, $vyhry, $prohry, $misto, $komentar, $vaha, $kat_nazev, $bodu);
 $s_vys->store_result();
 
 $kat_nazev_was = "";
@@ -94,7 +116,7 @@ while ($s_vys->fetch()) {
         <div class="ui-block-b"><?=$vaha?>kg</div>
 		<div class="ui-block-c"><?=$vyhry?></div>
 		<div class="ui-block-d"><?=$prohry?></div>
-		<div class="ui-block-e"><?=(isset($misto)&&$misto>0)?$misto:"bez"?></div>
+		<div class="ui-block-e"><?=(isset($misto)&&$misto>0)?$misto:"bez"?> (<?=$bodu ?>bodů)</div>
 	</div>
 <?php 
 	if (isset($komentar) && $komentar !== '') {?>

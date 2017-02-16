@@ -1,4 +1,8 @@
-<!DOCTYPE html> 
+<?php
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+?><!DOCTYPE html> 
 <html>
 <head>
 <?php
@@ -15,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET["id"]))
 if (isset($id))
 {
     $query = sprintf("select zavod.*, DATE_FORMAT(kdy,'%%d.%%m.%%Y') as kdyf from zavod where id=%d;", $id); // if id is not number it fails
-    $res = $SQL->query($query) or die("Query failed (".$query . "): ".$SQL->errno.": " . $SQL->error);
+    $res = $SQL->query($query) or sql_error("Query failed (".$query . "): ".$SQL->errno.": " . $SQL->error);
     $zavod = $res->fetch_array();
 } else
 {
@@ -33,15 +37,17 @@ if (isset($id))
     <script src="jquery.mobile-1.4.5.min.js" ></script>
     <script src="jquery-ui.js" ></script>
      <script>
-  $( function() {
-        $( "#datepicker" ).datepicker();
-        $( "#datepicker" ).datepicker( "option", "dateFormat", "d.m.yy" );
-        <?php
-        if (isset($id) && isset($zavod["kdyf"])) {?>
-        $("#datepicker").datepicker('setDate', '<?=$zavod["kdyf"]?>');
-        <?php } ?>
-         
-  } );
+     $(document).on("pagebeforecreate",function(event){
+         //alert("pagecreate event fired!");
+         console.log("datepicker");
+         $( "#datepicker" ).datepicker();
+         $( "#datepicker" ).datepicker( "option", "dateFormat", "d.m.yy" );
+         <?php
+         if (isset($id) && isset($zavod["kdyf"])) {?>
+         $("#datepicker").datepicker('setDate', '<?=$zavod["kdyf"]?>');
+         <?php } ?>
+       });
+     
   </script>
  <meta charset="UTF-8">
  <style type="text/css">
@@ -102,10 +108,10 @@ if (isset($id))
     <td><label for="text-basic">Typ:</label>
     <td><select name="typ">
     <?php
-    $qry = "select id, nazev from zavody_typ order by poradi, nazev";
-    $result_res = $SQL->query($qry) or die("Query failed: " . $SQL->error);
+    $qry = "select id, nazev from typ_zavodu order by sortorder, nazev";
+    $result_res = $SQL->query($qry) or sql_error("Query failed: " . $SQL->error);
     while ($zav_typ = $result_res->fetch_array()) { ?>
-        <option value="<?=$zav_typ["id"]?>" <?= ($zavod["type_id"]==$zav_typ["id"]?"selected" : "" ) ?>><?=$zav_typ["nazev"]?></option>
+        <option value="<?=$zav_typ["id"]?>" <?= ($zavod["typ_id"]==$zav_typ["id"]?"selected" : "" ) ?>><?=$zav_typ["nazev"]?></option>
     <?php }
     $result_res->close();
     ?>
@@ -125,7 +131,7 @@ if (isset($id))
         	$refid = -1;
         }
 	    $qry = sprintf("select kategorie.id, nazev, zavod_kateg.kateg_id from kategorie left join zavod_kateg on (kategorie.id=zavod_kateg.kateg_id and zavod_kateg.zavod_id = %d ) order by id", $refid);
-	    $result_res = $SQL->query($qry) or die("Query failed: " . $SQL->error);
+	    $result_res = $SQL->query($qry) or sql_error("Query failed: " . $SQL->error);
 	    while ($kateg = $result_res->fetch_array()) {
 	    	// kat[] is php specific!  ?>
             <label><?=$kateg["nazev"]?><input name="kat[]" type="checkbox" value="<?=$kateg["id"]?>" <?= isset($kateg["kateg_id"])?"checked":"" ?>></label> 

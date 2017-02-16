@@ -21,7 +21,7 @@ if (!isset($kat_id) or !isset($zavod_id))
 }
 // if kateg = 99 (pripravky) then kyu <= 5
 		
-$q_vys="select vysledky.id, jmeno, prijmeni, zavodnik_id, vyhry, prohry, misto, vaha, komentar from vysledky inner join judoka on (judoka.id=zavodnik_id) where zavod_id = ? and kategorie_id=?";
+$q_vys="select vysledky.id, jmeno, prijmeni, zavodnik_id, vyhry, prohry, misto, vaha, komentar from vysledky inner join clen on (clen.id=zavodnik_id) where zavod_id = ? and kategorie_id=?";
 $s_vys = $SQL->prepare($q_vys);
 if (! $s_vys) {
 	printf("prepare error: %s\n", $SQL->error);

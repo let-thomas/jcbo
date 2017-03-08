@@ -29,7 +29,7 @@ $rok=2017;
 ?>
 
     <div role="main" class="ui-content">
-    <h3>Zebricek za rok <?=$rok ?></h3>
+    <h1>Klubový žebříček za rok <?=$rok ?></h1>
  
 <?php
 include 'dbc.php';
@@ -46,16 +46,21 @@ $stmt->bind_param('i', $rok);
 $stmt->execute();
 $stmt->bind_result($jmeno, $prijmeni, $zavodnik_id, $kategorie_id, $nazev, $bodu);
 
-?>
-    <div class="ui-grid-b ui-responsive" style='background-color:#F4F4F8'>
-    
-
-<?php
+$last_katid=-1;
 while ($stmt->fetch()) {
+	if ($last_katid != $kategorie_id)
+	{
+		if ($last_katid != -1) printf("</div>");
+	?>
+    <h2>Kategorie <?=$nazev?></h2>
+    <div class="ui-grid-a ui-responsive" style='background-color:#F4F4F8'>
+        
+    <?php
+		$last_katid = $kategorie_id;
+	}
 	?>
         <div class="ui-block-a"><strong><?=$jmeno ." " . $prijmeni ?></strong></div>
-        <div class="ui-block-b"><?=$nazev?></div>
-        <div class="ui-block-c"><?=$bodu?></div>
+        <div class="ui-block-b"><?=$bodu?></div>
     
 <?php
 }
@@ -63,7 +68,7 @@ while ($stmt->fetch()) {
 $stmt->close();
 $SQL->close();
 ?>
-</div>
+
 </div><!-- main -->
 </div><!-- page -->
 </body>

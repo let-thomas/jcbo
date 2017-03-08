@@ -26,7 +26,6 @@
 	      <th data-priority="2">Kdy</th>
           <th></th>
           <th></th>
-          <th></th>
         
         </tr>
     </thead>
@@ -39,9 +38,10 @@ while ($zavod = $res->fetch_array()) {
 	// asi by bylo lepsi onclick()
 ?>
     <tr>
-        <td><?=$zavod["nazev"] ?></td>
+        <td><?=$zavod["nazev"] ?>
+          <a href="zavod.php?id=<?=$zavod["id"] ?>" class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-edit  ui-btn-icon-notext">editace</a> <!-- ui-corner-all ui-btn-icon-left -->
+        </td>
         <td><?=$zavod["kdy"] ?></td>
-        <td><a href="zavod.php?id=<?=$zavod["id"] ?>" class="ui-btn ui-corner-all">editace</a></td>
         <td><a href="vysledky.php?z_id=<?=$zavod["id"] ?>" class="ui-btn ui-corner-all">vysledky</a></td>
         <td><a href="zprava.php?z_id=<?=$zavod["id"] ?>" class="ui-btn ui-corner-all">zprava</a></td>
     </li>

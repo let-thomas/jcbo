@@ -51,4 +51,4 @@ END; //
 delimiter ;
 
 
- 
+ALTER TABLE `jcbo`.`vysledky` CHANGE COLUMN `vaha` `vaha` VARCHAR(4) NOT NULL DEFAULT '0' ;

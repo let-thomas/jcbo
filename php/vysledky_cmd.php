@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST["action"] === 'store') && i
 			echo "Prepare update failed: (" . $SQL->errno . ") " . $SQL->error;
 			die();
 		}
-		$stmt->bind_param('iiisii', $data["vyhry"], $data["prohry"], $data["position"], $data["comment"], $data["vaha"], $data["v_id"] );
+		$stmt->bind_param('iiissi', $data["vyhry"], $data["prohry"], $data["position"], $data["comment"], $data["vaha"], $data["v_id"] );
 		$stmt->execute();
 		$stmt->close();
 		printf("<!-- update %d: %s  -->\n", $SQL->errno, $SQL->error);
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST["action"] === 'store') && i
 			die();
 		}
 
-		$stmt->bind_param('iiiiiisi', $zavodnik_id, $zavod_id, $kat_id, $data["vyhry"], $data["prohry"], $data["position"], $data["comment"], $data["vaha"]);
+		$stmt->bind_param('iiiiiiss', $zavodnik_id, $zavod_id, $kat_id, $data["vyhry"], $data["prohry"], $data["position"], $data["comment"], $data["vaha"]);
 		$stmt->execute();
 		$stmt->close();
 		printf("<!-- vlozeno %d: %s  -->\n", $SQL->errno, $SQL->error);

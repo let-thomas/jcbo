@@ -47,8 +47,8 @@ if ($s_vys->num_rows > 0) {
 while ($s_vys->fetch()) {// background-color ?>
     <tr > 
     <td id="td_<?=$vysledek_id ?>"><?= $jmeno ?> <?= $prijmeni?> 
-        <input type='button' data-icon='edit ' data-iconpos='notext' value='Icon only' data-inline='true' id="edit_<?=$vysledek_id ?>">
-        <input type='button' data-icon='delete' data-iconpos='notext' value='Icon only' data-inline='true' id="del_<?=$vysledek_id ?>">
+        <input type='button' data-icon='edit ' data-iconpos='notext' value='edit' data-inline='true' id="edit_<?=$vysledek_id ?>">
+        <input type='button' data-icon='delete' data-iconpos='notext' value='smazat' data-inline='true' id="del_<?=$vysledek_id ?>">
         <input type="hidden" name="vyhry" value="<?=$vyhry?>"> 
         <input type="hidden" name="prohry" value="<?=$prohry?>">
         <input type="hidden" name="misto" value="<?=$misto?>">
@@ -97,7 +97,7 @@ while ($s_vys->fetch()) {// background-color ?>
     </div>
     <div class="ui-block-d">
         <label for="in_wgh">Váha</label>
-        <input data-inline="true" data-clear-btn="false" name="vaha" id="in_wgh" value="" type="number" tabindex="5" title="">
+        <input data-inline="true" data-clear-btn="false" name="vaha" id="in_wgh" value="" type="text" tabindex="5" title="">
     </div>
   </div>
 <!--  --> 

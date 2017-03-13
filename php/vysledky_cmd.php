@@ -52,6 +52,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST["action"] === 'delete') && 
 	$SQL->query($query);
 	printf("<!-- smazano %d: %s -->\n", $SQL->errno, $SQL->error);
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST["action"] === 'hodnoceni') && isset($_POST["zid"]) ) // update hodnoceni
+{
+	if (!($stmt = $SQL->prepare("UPDATE zavod set hodnoceni=? where id=?"))) {
+		echo "Prepare update failed: (" . $SQL->errno . ") " . $SQL->error;
+		die();
+	}
+	$stmt->bind_param('si', $_POST["txt"], $_POST["zid"] );
+	$stmt->execute();
+	$stmt->close();
+	printf("<!-- hodn pro %d: %s -->\n", $_POST["zid"], $_POST["txt"]); 
+}
 
 $SQL->close();
 ?>

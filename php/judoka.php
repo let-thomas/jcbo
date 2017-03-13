@@ -10,7 +10,7 @@ include 'dbc.php';
 if ($method == "list" && $format =="json" && isset($kat_id))
 {
 	$query ="select clen.id, clen.jmeno, clen.prijmeni from kategorie, clen ";
-	$query.=" where kategorie.id=".$kat_id."  and year(narozen) between (year(curdate())-rdo) and (year(curdate())-rod) and status=1  order by prijmeni, jmeno;";
+	$query.=" where kategorie.id=".$kat_id."  and year(narozen) between (year(curdate())-rdo) and (year(curdate())-rod) and status not in (7,8)  order by prijmeni, jmeno;";
 	printf("[\n");
 	$res = $SQL->query($query) or die("Query failed: " . $SQL->error);
 	$separate = 0;

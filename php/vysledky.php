@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: no-store, no-cache, private, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 ?> 
@@ -86,7 +86,7 @@ if (!isset($zavod_id))
 } else 
 {
 	//printf("<p>v elsu</p>\n");
-	$qry ="select zavod.id as zid, zavod.nazev as zname, kategorie.id as kid, kategorie.nazev as kname  from zavod ";
+	$qry ="select zavod.id as zid, hodnoceni, zavod.nazev as zname, kategorie.id as kid, kategorie.nazev as kname  from zavod ";
 	$qry.=" left join zavod_kateg on (zavod.id=zavod_id) ";
 	$qry.=" left join kategorie on (kategorie.id = kateg_id) ";
 	$qry.=" where zavod.id=?";
@@ -98,13 +98,23 @@ if (!isset($zavod_id))
 	$stmt->execute();
 	
 	$stmt->store_result();
+	printf("<!-- %s -->", $qry);
 	//printf("<p>stmt->num_rows: %d</p>\n", $stmt->num_rows);
 	
 	/* bind result variables */
-	$stmt->bind_result($zid, $nazev, $kid, $kname);
+	$stmt->bind_result($zid, $hodnoceni, $nazev, $kid, $kname);
 	
 	if ($stmt->fetch()) {
-		printf ("<h3>Vysledky z '%s'</h3>\n", $nazev);
+?>
+    <form id="f_hodnoceni" action="">
+    <input id="z_id" name="z_id" value="<?=$zavod_id ?>" type="hidden" />
+    <label for="in_hodnoceni">Hodnocení turnaje: </label>
+    <textarea rows="1" name="hodnoceni" id="in_hodnoceni" tabindex="0"><?=$hodnoceni ?></textarea>
+    <!--  input type="button" class="ui-btn ui-btn-inline " name="f_action" id="f_store" value="Ulozit" --><!-- data-theme="b" -->
+    </form>
+<?php
+	
+		printf ("<h3>Výsledky z '%s'</h3>\n", $nazev);
 		//printf("<!-- %d - %d - %s -->\n", $zid, $kid, $kname);
 	} else
 	{

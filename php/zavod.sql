@@ -63,6 +63,7 @@ CREATE or replace TABLE bodovani (
 alter table zavod add column typ_id smallint not null default 0;
 alter table zavod add CONSTRAINT fk_z_tz FOREIGN KEY (typ_id) REFERENCES typ_zavodu(id) on update CASCADE
 
+alter table zavod add column hodnoceni TEXT(5000);
 
 --SELECT table.*,typ_zavodu.*  FROM `TABLE13`,typ_zavodu WHERE `TABLE13`.`COL 1`
 

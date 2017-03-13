@@ -1,9 +1,8 @@
-<!DOCTYPE html> 
 <?php
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
-?>
+?><!DOCTYPE html> 
 <html>
 <title>1JCBO - Zpráva ze závodu</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -48,7 +47,7 @@ if (!isset($zavod_id))
 
 if (isset($zavod_id))
 {
-$q_zavod="select nazev, kdy, kde from zavod where id=?";
+$q_zavod="select nazev, kdy, kde, hodnoceni from zavod where id=?";
 $s_zavod = $SQL->prepare($q_zavod);
 if (! $s_zavod) {
 	printf("prepare error: %s\n", $SQL->error);
@@ -57,7 +56,7 @@ if (! $s_zavod) {
 }
 $s_zavod->bind_param('i', $zavod_id);
 $s_zavod->execute();
-$s_zavod->bind_result($nazev, $kdy, $kde);
+$s_zavod->bind_result($nazev, $kdy, $kde, $hodnoceni);
 if ($s_zavod->fetch())
 {
 	?>
@@ -68,12 +67,15 @@ if ($s_zavod->fetch())
             <div class="ui-block-a">Kde</div>
             <div class="ui-block-b"><?=$kde?></div>
    </div>
+   <h3>Hodnocení</h3>
+   <p><?= $hodnoceni?></p>
     
     <?php 
 } else
 {
 	printf("<!-- no fetch -->\n");
 }
+
 $s_zavod->close();
 
 

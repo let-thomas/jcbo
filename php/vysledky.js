@@ -209,6 +209,32 @@ $.mobile.document
         
         
 	})
+	.on('focusout', '#f_hodnoceni', function() { // blur
+        var zid = $("#z_id").val();
+        var txt = $("#in_hodnoceni").val();
+        $.ajax({url: 'vysledky_cmd.php',
+            data: {action : 'hodnoceni', zid: zid, txt: txt},
+            type: 'post',                  
+            async: 'true',
+            dataType: 'html',
+            beforeSend: function() {
+                // This callback function will trigger before data is sent
+                $.mobile.loading('show'); // This will show Ajax spinner
+            },
+            complete: function() {
+                // This callback function will trigger on data sent/received complete   
+                $.mobile.loading('hide'); // This will hide Ajax spinner
+            },
+            success: function (result) {
+                //var current_index = $("#tabs").tabs("option","active");
+                //$("#tabs").tabs('load',current_index);
+            },
+            error: function (request,error) {
+                // This callback function will trigger on unsuccessful action               
+                alert('Network error has occurred please try again!');
+            }
+        });     
+    })
 	.on('click', '[id^=store]', function(ev, handl) { // catch the form's submit event
                 { //ev.currentTarget
                 	var form = $(this).closest("form");
